@@ -54,3 +54,22 @@ test('Add to cart - more products', async ({ page }) => {
   await expect(page.getByRole('cell', { name: 'Samsung galaxy s6' })).toBeVisible();
   await expect(page.getByRole('cell', { name: 'Nokia lumia 1520' })).toBeVisible();
 });
+
+test('Verify product details UI elements', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  await page.getByRole('link', { name: 'Samsung galaxy s6' }).click();
+  const locator = page.locator('div').filter({ hasText: 'Samsung galaxy s6$360 *' }).first();
+  await expect(locator).toHaveCSS('display', 'block');
+  await expect(locator).toHaveCSS('border-image-repeat', 'stretch');
+  await expect(locator).toHaveCSS('color', 'rgb(41, 43, 44)');
+});
+
+test('Verify Add to card button', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  await page.getByRole('link', { name: 'Samsung galaxy s6' }).click();
+  const locator = page.getByRole('link', { name: 'Add to cart' });
+  await expect(locator).toHaveCSS('background-color', 'rgb(52, 168, 83)');
+  await expect(locator).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(locator).toHaveCSS('padding-bottom', '12px');
+  await expect(locator).toHaveCSS('padding-left', '24px');
+});

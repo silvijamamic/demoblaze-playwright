@@ -44,3 +44,24 @@ test('About us', async ({ page }) => {
   //klik Close
   await page.locator('#videoModal').getByText('Close', { exact: true }).click();
 });
+
+test('Verify Contact modal', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  await page.getByRole('link', { name: 'Contact' }).click();
+  const locator = page.getByText('New message × Contact Email:');
+  await expect(locator).toHaveCSS('display', 'flex');
+  await expect(locator).toHaveCSS('position', 'relative');
+  await expect(locator).toHaveCSS('font-family', 'LatoWeb');
+  await expect(locator).toHaveCSS('font-size', '14.6667px');
+});
+
+test('Verify About us modal', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  await page.getByRole('link', { name: 'About us' }).click();
+  const locator = page.getByText('About us × Video Player is');
+  await expect(locator).toHaveCSS('display', 'flex');
+  await expect(locator).toHaveCSS('position', 'relative');
+  await expect(locator).toHaveCSS('font-family', 'LatoWeb');
+  await expect(locator).toHaveCSS('font-size', '14.6667px');
+  await expect(locator).toHaveCSS('box-sizing', 'border-box');
+});

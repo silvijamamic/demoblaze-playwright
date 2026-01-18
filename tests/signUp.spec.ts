@@ -49,3 +49,12 @@ test('User already exist', async ({ page }) => {
   });
   await page.getByRole('button', { name: 'Sign up' }).click();
 });
+
+test('Verify Sign Up modal elements', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  await page.getByRole('link', { name: 'Sign up' }).click();
+  const locator = page.getByText('Sign up × Username: Password');
+  await expect(locator).toHaveCSS('display', 'flex');
+  await expect(locator).toHaveCSS('font-weight', '400');
+  await expect(locator).toHaveCSS('color', 'rgb(134, 134, 136)');
+});

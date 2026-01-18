@@ -35,7 +35,6 @@ test('Wrong password', async ({ page }) => {
 //15. Log out
 test('Log out', async ({ page }) => {
   await page.goto('https://www.demoblaze.com/index.html');
-
   await page.getByRole('link', { name: 'Log in' }).click();
   await page.locator('#loginusername').fill('silvijamamic');
   await page.locator('#loginpassword').fill('password123');
@@ -43,4 +42,13 @@ test('Log out', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Welcome silvijamamic' })).toBeVisible();
   await page.getByRole('link', { name: 'Log out' }).click();
   await expect(page.getByRole('link', { name: 'Log in' })).toBeVisible();
+});
+
+test('Verify Log in modal elements', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  await page.getByRole('link', { name: 'Log in' }).click();
+  const locator = page.locator('#logInModal');
+  await expect(locator).toHaveCSS('display', 'block');
+  await expect(locator).toHaveCSS('font-weight', '400');
+  await expect(locator).toHaveCSS('color', 'rgb(134, 134, 136)');
 });

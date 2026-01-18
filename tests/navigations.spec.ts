@@ -30,9 +30,9 @@ test('Show Phones', async ({ page }) => {
 //4. Categories-Show laptops
 test('Show Laptops', async ({ page }) => {
   await page.goto('https://www.demoblaze.com/index.html');
-
   await page.getByRole('link', { name: 'Laptops' }).click();
-  await expect(page.getByRole('link', { name: 'Sony vaio i5' })).toBeVisible(); //trebam li provjeravati za sve proizvode?
+  await expect.soft(page.getByRole('link', { name: 'Sony vaio i5' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Samsung galaxy s6' })).not.toBeVisible();
 });
 
 //5. Categories-Show Monitors
@@ -52,7 +52,7 @@ test('Pagination', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Nokia lumia 1520' })).toBeVisible();
 });
 
-// //7. Carousel
+//7. Carousel
 test('Carousel', async ({ page }) => {
   await page.goto('https://www.demoblaze.com/index.html');
   await page.locator('#carouselExampleIndicators').getByRole('button', { name: 'Next' }).click();
@@ -60,4 +60,20 @@ test('Carousel', async ({ page }) => {
     .locator('#carouselExampleIndicators')
     .getByRole('button', { name: 'Previous' })
     .click();
+});
+
+test('UI navbar-brand', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  const locator = page.getByRole('link', { name: 'PRODUCT STORE' });
+  await expect(locator).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+  await expect(locator).toHaveCSS('display', 'block');
+});
+
+test('UI navbar', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  const locator = page.getByText('PRODUCT STORE Home (current)');
+  await expect(locator).toHaveCSS('display', 'flex');
+  await expect(locator).toHaveCSS('font-weight', '400');
+  await expect(locator).toHaveCSS('position', 'relative');
+  await expect(locator).toHaveCSS('font-style', 'normal');
 });

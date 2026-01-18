@@ -56,3 +56,24 @@ test('Purchase - mandatory fields', async ({ page }) => {
   });
   await page.getByRole('button', { name: 'Purchase' }).click();
 });
+
+test('Verify Place order bottom sheet', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  await page.getByRole('link', { name: 'Cart' }).click();
+  await page.getByRole('button', { name: 'Place order' }).click();
+  const locator = page.getByText('Place order × Total: Name:');
+  await expect(locator).toHaveCSS('background-clip', 'padding-box');
+  await expect(locator).toHaveCSS('color', 'rgb(41, 43, 44)');
+  await expect(locator).toHaveCSS('display', 'flex');
+  await expect(locator).toHaveCSS('position', 'relative');
+});
+
+test('Verify Close and Purchase buttons', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  await page.getByRole('link', { name: 'Cart' }).click();
+  await page.getByRole('button', { name: 'Place order' }).click();
+  const locator = page.getByText('Close Purchase');
+  await expect(locator).toHaveCSS('align-items', 'center');
+  await expect(locator).toHaveCSS('display', 'flex');
+  await expect(locator).toHaveCSS('font-size', '14.6667px');
+});
