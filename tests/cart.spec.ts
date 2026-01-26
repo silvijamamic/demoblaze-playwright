@@ -1,39 +1,27 @@
 import { test, expect } from '@playwright/test';
+import { cartPage } from '../pages/cart';
 
 //19. Cart - view
 test('Cart - view', async ({ page }) => {
-  await page.goto('https://www.demoblaze.com/index.html');
-  await page.getByRole('link', { name: 'Cart' }).click();
-  await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Place Order' })).toBeVisible();
+  const cart = new cartPage(page);
+
+  await cart.goto();
+  await cart.cartView();
 });
 //20. Delete product from cart
 test('Delete products from cart', async ({ page }) => {
-  await page.goto('https://www.demoblaze.com/index.html');
-  await page.getByRole('link', { name: 'Samsung galaxy s6' }).click();
-  //alert
-  const [dialog] = await Promise.all([
-    page.waitForEvent('dialog'),
-    page.getByRole('link', { name: 'Add to cart' }).click(),
-  ]);
-  await dialog.accept();
-  //idem u Cart
-  await Promise.all([
-    page.waitForURL('**/cart.html'),
-    page.getByRole('link', { name: 'Cart', exact: true }).click(),
-  ]);
-  //delete product
-  const rows = page.locator('#tbodyid tr');
-  await expect(rows).toHaveCount(1);
-  await page.getByRole('link', { name: 'Delete' }).first().click();
-  //await expect(page.getByRole('cell', { name: 'Samsung galaxy s6' })).not.toBeVisible();
+  const cart = new cartPage(page);
+
+  await cart.goto();
+  await cart.deleteProduct();
 });
 
 //21. Empty cart
 test('Empty cart', async ({ page }) => {
-  await page.goto('https://www.demoblaze.com/index.html');
-  await page.getByRole('link', { name: 'Cart' }).click();
-  await expect(page.getByRole('link', { name: 'Delete' })).not.toBeVisible();
+  const cart = new cartPage(page);
+
+  await cart.goto();
+  await cart.emptyCart();
 });
 
 test('Verify Cart screen', async ({ page }) => {
@@ -51,8 +39,8 @@ test('Verify Place Order button', async ({ page }) => {
   await page.goto('https://www.demoblaze.com/index.html');
   await page.getByRole('link', { name: 'Cart', exact: true }).click();
   const locator = page.getByRole('button', { name: 'Place Order' });
-  await expect(locator).toHaveCSS('background-color', 'rgb(52, 168, 83)');
-  await expect(locator).toHaveCSS('display', 'inline-block');
+  await expect.soft(locator).toHaveCSS('background-color', 'rgb(52, 168, 83)');
+  await expect.soft(locator).toHaveCSS('display', 'inline-block');
   await expect(locator).toHaveCSS('font-family', 'sans-serif');
   await expect(locator).toHaveCSS('font-size', '16px');
 });

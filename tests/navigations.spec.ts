@@ -1,65 +1,60 @@
 import { test, expect } from '@playwright/test';
+import { NavigationPage } from '../pages/navigation';
 
 //1. Open home page
 test('Open Home page', async ({ page }) => {
-  await page.goto('https://www.demoblaze.com/index.html');
-  await expect(page).toHaveTitle(/STORE/);
+  const navigation = new NavigationPage(page);
 
-  await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Contact' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'About us' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Log in' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Sign up' })).toBeVisible();
+  await navigation.goto();
+  await navigation.openHomePage();
 });
 
 //2. Navigate to Cart
 test('Navigate to Cart', async ({ page }) => {
-  await page.goto('https://www.demoblaze.com/cart.html');
+  const navigation = new NavigationPage(page);
 
-  await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();
+  await navigation.goto();
+  await navigation.navigateToCart();
 });
 
 //3. Categories-Show phones
 test('Show Phones', async ({ page }) => {
-  await page.goto('https://www.demoblaze.com/index.html');
+  const navigation = new NavigationPage(page);
 
-  await page.getByRole('link', { name: 'Phones' }).click();
-  await expect(page.getByRole('link', { name: 'Samsung galaxy s6' })).toBeVisible();
+  await navigation.goto();
+  await navigation.showPhones();
 });
 
 //4. Categories-Show laptops
 test('Show Laptops', async ({ page }) => {
-  await page.goto('https://www.demoblaze.com/index.html');
-  await page.getByRole('link', { name: 'Laptops' }).click();
-  await expect.soft(page.getByRole('link', { name: 'Sony vaio i5' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Samsung galaxy s6' })).not.toBeVisible();
+  const navigation = new NavigationPage(page);
+
+  await navigation.goto();
+  await navigation.showLaptops();
 });
 
 //5. Categories-Show Monitors
 test('Show Monitors', async ({ page }) => {
-  await page.goto('https://www.demoblaze.com/index.html');
-  await page.getByRole('link', { name: 'Monitors' }).click();
-  await expect(page.getByRole('link', { name: 'Apple monitor 24' })).toBeVisible();
+  const navigation = new NavigationPage(page);
+
+  await navigation.goto();
+  await navigation.showMonitors();
 });
 
 //6. Pagination
 test('Pagination', async ({ page }) => {
-  await page.goto('https://www.demoblaze.com/index.html#');
-  await expect(page.getByRole('link', { name: 'Samsung galaxy s6' })).toBeVisible();
-  await page.click('#next2');
-  await expect(page.getByRole('link', { name: 'MacBook air' })).toBeVisible();
-  await page.click('#prev2');
-  await expect(page.getByRole('link', { name: 'Nokia lumia 1520' })).toBeVisible();
+  const navigation = new NavigationPage(page);
+
+  await navigation.goto();
+  await navigation.pagination();
 });
 
 //7. Carousel
 test('Carousel', async ({ page }) => {
-  await page.goto('https://www.demoblaze.com/index.html');
-  await page.locator('#carouselExampleIndicators').getByRole('button', { name: 'Next' }).click();
-  await page
-    .locator('#carouselExampleIndicators')
-    .getByRole('button', { name: 'Previous' })
-    .click();
+  const navigation = new NavigationPage(page);
+
+  await navigation.goto();
+  await navigation.carousel();
 });
 
 test('UI navbar-brand', async ({ page }) => {
