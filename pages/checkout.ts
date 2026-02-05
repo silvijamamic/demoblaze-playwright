@@ -18,6 +18,7 @@ export class checkoutPage {
   readonly thankYou: Locator;
   readonly buttonOk: Locator;
   readonly cartPage: Locator;
+  readonly buttonXPlaceOrder: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -38,28 +39,18 @@ export class checkoutPage {
     this.thankYou = page.getByText('Thank you for your purchase!');
     this.buttonOk = page.getByRole('button', { name: 'OK' });
     this.cartPage = page.getByRole('link', { name: 'Cart', exact: true });
+    this.buttonXPlaceOrder = page.getByRole('dialog', { name: 'Place order' }).getByLabel('Close');
   }
 
   async goto() {
     await this.page.goto('https://www.demoblaze.com/index.html');
   }
 
-  async placeOrderModal() {
+  async topNavigationCart() {
     await this.cartLink.click();
-    await expect.soft(this.buttonPlaceOrder).toBeVisible();
-    await this.buttonPlaceOrder.click();
-    await expect.soft(this.headingPlaceOrder).toBeVisible();
-    await expect.soft(this.textboxName).toBeVisible();
-    await expect.soft(this.textboxCountry).toBeVisible();
-    await expect.soft(this.textboxCity).toBeVisible();
-    await expect.soft(this.textboxCreditCard).toBeVisible();
-    await expect.soft(this.textboxMonth).toBeVisible();
-    await expect.soft(this.textboxYear).toBeVisible();
-    await expect.soft(this.buttonPlaceOrderClose).toBeVisible();
-    await expect.soft(this.buttonPurchase).toBeVisible();
   }
 
-  async purchaseSuccessful(
+  async placeOrderModal(
     name: string,
     country: string,
     city: string,
@@ -67,30 +58,11 @@ export class checkoutPage {
     month: string,
     year: string
   ) {
-    await this.samsungGalaxy.click();
-    await this.buttonAddToCart.click();
-    await this.cartPage.click();
-    await this.buttonPlaceOrder.click();
     await this.textboxName.fill(name);
     await this.textboxCountry.fill(country);
     await this.textboxCity.fill(city);
     await this.textboxCreditCard.fill(creditCard);
     await this.textboxMonth.fill(month);
     await this.textboxYear.fill(year);
-    await this.buttonPurchase.click();
-    await expect.soft(this.thankYou).toBeVisible();
-    await expect.soft(this.buttonOk).toBeVisible();
-    await this.buttonOk.click();
-  }
-
-  async mandatoryFields() {
-    this.page.once('dialog', async (dialog) => {
-      expect(dialog.type()).toBe('alert');
-      expect(dialog.message()).toContain('Please fill out Name and Creditcard.');
-      await dialog.accept();
-    });
-    await this.cartLink.click();
-    await this.buttonPlaceOrder.click();
-    await this.buttonPurchase.click();
   }
 }

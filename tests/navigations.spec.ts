@@ -1,56 +1,67 @@
 import { test, expect } from '@playwright/test';
 import { NavigationPage } from '../pages/navigation';
 
-//1. Open home page
+//Open home page
 test('Open Home page', async ({ page }) => {
   const navigation = new NavigationPage(page);
 
   await navigation.goto();
-  await navigation.openHomePage();
+  await expect.soft(navigation.productStore).toBeVisible();
+  await expect.soft(navigation.homeLink).toBeVisible();
+  await expect.soft(navigation.contactLink).toBeVisible();
+  await expect.soft(navigation.aboutUsLink).toBeVisible();
+  await expect.soft(navigation.cartLink).toBeVisible();
+  await expect.soft(navigation.loginLink).toBeVisible();
+  await expect(navigation.signUpLink).toBeVisible();
 });
 
-//2. Navigate to Cart
-test('Navigate to Cart', async ({ page }) => {
+//Categories-show list of Phones
+test('Phones list is displayed', async ({ page }) => {
   const navigation = new NavigationPage(page);
 
   await navigation.goto();
-  await navigation.navigateToCart();
+  await navigation.phonesCategory.click();
+  await navigation.itemsList.locator('.card-title').first().waitFor({ timeout: 5000 });
+  const titles = await navigation.getTitlesFromList();
+  expect(titles.length).toBeGreaterThan(0);
+  //console.log(titles);
 });
-
-//3. Categories-Show phones
-test('Show Phones', async ({ page }) => {
+//Categories-show list of Laptops
+test('Laptops list is displayed', async ({ page }) => {
   const navigation = new NavigationPage(page);
 
   await navigation.goto();
-  await navigation.showPhones();
+  await navigation.laptopsCategory.click();
+  await navigation.itemsList.first().waitFor();
+  const titles = await navigation.getTitlesFromList();
+  expect(titles.length).toBeGreaterThan(0);
 });
 
-//4. Categories-Show laptops
-test('Show Laptops', async ({ page }) => {
+//Categories-show list of Monitors
+test('Monitors list is displayed', async ({ page }) => {
   const navigation = new NavigationPage(page);
 
   await navigation.goto();
-  await navigation.showLaptops();
+  await navigation.monitorsCategory.click();
+  await navigation.itemsList.first().waitFor({ timeout: 5000 });
+  const titles = await navigation.getTitlesFromList();
+  expect(titles.length).toBeGreaterThan(0);
 });
 
-//5. Categories-Show Monitors
-test('Show Monitors', async ({ page }) => {
+//Pagination
+test('Verify next and previous button in pagination', async ({ page }) => {
   const navigation = new NavigationPage(page);
 
   await navigation.goto();
-  await navigation.showMonitors();
-});
-
-//6. Pagination
-test('Pagination', async ({ page }) => {
-  const navigation = new NavigationPage(page);
-
-  await navigation.goto();
-  await navigation.pagination();
+  await expect.soft(navigation.samsungGalaxy).toBeVisible();
+  await navigation.buttonNext.click();
+  await expect.soft(navigation.macBookAir).toBeVisible();
+  await navigation.buttonPrevious.click();
+  await expect(navigation.nokiaLumia).toBeVisible();
 });
 
 //7. Carousel
-test('Carousel', async ({ page }) => {
+test('Verify next and previous button in carousel', async ({ page }) => {
   const navigation = new NavigationPage(page);
 
   await navigation.goto();

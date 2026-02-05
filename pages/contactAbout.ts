@@ -12,6 +12,10 @@ export class contactAboutPage {
   readonly aboutUsLink: Locator;
   readonly video: Locator;
   readonly closeAbout: Locator;
+  readonly closeXButtonContact: Locator;
+  readonly closeXButtonAbout: Locator;
+  readonly playVideo: Locator;
+  readonly headingAboutUs: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -26,43 +30,29 @@ export class contactAboutPage {
     this.aboutUsLink = page.getByRole('link', { name: 'About us' });
     this.video = page.locator('div').filter({ hasText: 'Video Player is loading.Play' }).nth(3);
     this.closeAbout = page.locator('#videoModal').getByText('Close', { exact: true });
+    this.closeXButtonContact = page
+      .getByRole('dialog', { name: 'New message' })
+      .getByLabel('Close');
+    this.closeXButtonAbout = page.locator('#videoModal').getByLabel('Close');
+    this.playVideo = page.getByRole('button', { name: 'Play Video' });
+    this.headingAboutUs = page.getByRole('heading', { name: 'About us', exact: true });
   }
 
   async goto() {
     await this.page.goto('https://www.demoblaze.com/index.html');
   }
 
-  async contactModal(email: string, contactName: string, message: string) {
+  async topNavigationContact() {
     await this.contactLink.click();
-    this.page.once('dialog', async (dialog) => {
-      expect(dialog.type()).toBe('alert');
-      expect(dialog.message()).toContain('Thanks for the message!!');
-      await dialog.accept();
-    });
-    await expect.soft(this.headingNewMessage).toBeVisible();
-    await expect.soft(this.emailTextbox).toBeVisible();
-    await expect
-      .soft(this.page.getByRole('textbox', { name: 'Contact Email: Contact Name:' }))
-      .toBeVisible();
-    await expect.soft(this.page.getByRole('textbox', { name: 'Message' })).toBeVisible();
-    await expect.soft(this.page.getByLabel('New message').getByText('Close')).toBeVisible();
-    await expect.soft(this.page.getByRole('button', { name: 'Send message' })).toBeVisible();
+  }
+
+  async topNavigationAbout() {
+    await this.aboutUsLink.click();
+  }
+
+  async contactModal(email: string, contactName: string, message: string) {
     await this.emailTextbox.fill(email);
     await this.contactNameTextbox.fill(contactName);
     await this.messageTextbox.fill(message);
-    await this.buttonSendMessage.click();
-  }
-
-  async closeModal() {
-    await this.contactLink.click();
-    await expect.soft(this.headingNewMessage).toBeVisible();
-    await this.page.getByLabel('New message').getByText('Close').click();
-  }
-
-  async aboutModal() {
-    await this.aboutUsLink.click();
-    await expect
-      .soft(this.page.locator('div').filter({ hasText: 'Video Player is loading.Play' }).nth(3))
-      .toBeVisible();
   }
 }

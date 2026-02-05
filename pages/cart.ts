@@ -7,47 +7,52 @@ export class cartPage {
   readonly buttonPlaceOrder: Locator;
   readonly samsungGalaxy: Locator;
   readonly deleteLink: Locator;
+  readonly totalPrice: Locator;
+  readonly productStore: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
-    this.cartLink = page.getByRole('link', { name: 'Cart' });
+    this.cartLink = page.getByRole('navigation').getByRole('link', { name: 'Cart' });
     this.headingProducts = page.getByRole('heading', { name: 'Products' });
     this.buttonPlaceOrder = page.getByRole('button', { name: 'Place Order' });
     this.samsungGalaxy = page.getByRole('link', { name: 'Samsung galaxy s6' });
     this.deleteLink = page.getByRole('link', { name: 'Delete' });
+    this.totalPrice = page.locator('#totalp');
+    this.productStore = page.getByRole('link', { name: 'PRODUCT STORE' });
   }
 
   async goto() {
     await this.page.goto('https://www.demoblaze.com/index.html');
   }
 
-  async cartView() {
+  async productStorePage() {
+    await this.productStore.click();
+  }
+  async topNavigationCart() {
     await this.cartLink.click();
-    await expect.soft(this.headingProducts).toBeVisible();
-    await expect.soft(this.buttonPlaceOrder).toBeVisible();
   }
 
-  async deleteProduct() {
-    await this.samsungGalaxy.click();
-    const [dialog] = await Promise.all([
-      this.page.waitForEvent('dialog'),
-      this.page.getByRole('link', { name: 'Add to cart' }).click(),
-    ]);
-    await dialog.accept();
-
-    await Promise.all([
-      this.page.waitForURL('**/cart.html'),
-      this.page.getByRole('link', { name: 'Cart', exact: true }).click(),
-    ]);
-
-    const rows = this.page.locator('#tbodyid tr');
-    await expect(rows).toHaveCount(1);
-    await this.page.getByRole('link', { name: 'Delete' }).first().click();
+  async getProductPriceByName(productName: string): Promise<number> {
+    const row = this.page.locator('#tbodyid tr', { hasText: productName });
+    await expect(row).toBeVisible();
+    const priceText = await row.locator('td').nth(2).innerText(); //treća kolona
+    return Number(priceText.trim());
   }
 
-  async emptyCart() {
-    await this.cartLink.click();
-    await expect.soft(this.deleteLink).not.toBeVisible();
+  async getTotalPrice(): Promise<number> {
+    const totalText = await this.totalPrice.innerText();
+    return Number(totalText.trim());
+  }
+
+  async deleteProductByName(productName: string) {
+    const row = this.page.locator('#tbodyid tr', { hasText: productName });
+    await row.getByRole('link', { name: 'Delete' }).click();
+    await expect(row).toHaveCount(0);
+  }
+
+  async expectCartToBeEmpty() {
+    const row = this.page.locator('#tbodyid tr');
+    await expect(row).toHaveCount(0);
   }
 }

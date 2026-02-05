@@ -1,33 +1,44 @@
 import { test, expect } from '@playwright/test';
 import { detailsAddToCart } from '../pages/detailsAddToCart';
+import { helpersPage } from '../pages/helpers';
 
-//16. Open product details
-test('Open product details', async ({ page }) => {
+//Open product details
+test('Open product details for Samsung galaxy s6', async ({ page }) => {
   const addToCart = new detailsAddToCart(page);
 
   await addToCart.goto();
-  await addToCart.openProductDetail();
+  await addToCart.samsungGalaxy.click();
+  await expect.soft(addToCart.headingSamsungGalaxy).toBeVisible();
+  await expect.soft(addToCart.productDescriptionSamsung).toBeVisible();
+  await expect.soft(addToCart.priceSamsung).toBeVisible();
+  await expect(addToCart.linkAddToCart).toBeVisible();
 });
 
-//17. Add to cart - successfull
-test('Add to cart', async ({ page }) => {
+//Add to cart - successfull
+test('Add one product to cart', async ({ page }) => {
   const addToCart = new detailsAddToCart(page);
+  const alert = new helpersPage(page);
 
   await addToCart.goto();
-  await addToCart.openProductDetail();
-  await addToCart.addToCart();
+  await addToCart.openProductDetails(addToCart.samsungGalaxy, addToCart.headingSamsungGalaxy);
+  await alert.alertDialog('Product added', async () => {
+    await addToCart.linkAddToCart.click();
+  });
 });
 
-//18. Add to cart - more products
+//Add to cart - more products
 test('Add to cart - more products', async ({ page }) => {
   const addToCart = new detailsAddToCart(page);
+  const alert = new helpersPage(page);
 
   await addToCart.goto();
   //await addToCart.clearCart();
-  await addToCart.goto();
-  await addToCart.openProductDetail();
-  await addToCart.addToCart();
-  await addToCart.moreProducts();
+  await addToCart.addProductToCart(addToCart.samsungGalaxy, addToCart.headingSamsungGalaxy);
+  //await alert.alertDialog('Product added');
+  await addToCart.productStore.click();
+  await addToCart.addProductToCart(addToCart.nokiaLumia, addToCart.headingNokia);
+  // await alert.alertDialog('Product added');
+  await addToCart.cartLink.click();
 });
 
 test('Verify product details UI elements', async ({ page }) => {

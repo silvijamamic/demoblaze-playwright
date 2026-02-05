@@ -7,6 +7,8 @@ export class SignUpPage {
   readonly usernameTextboxSignUp: Locator;
   readonly passwordTextboxSignUp: Locator;
   readonly buttonSignUp: Locator;
+  readonly buttonXSignUp: Locator;
+  readonly buttonClose: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -16,33 +18,20 @@ export class SignUpPage {
     this.usernameTextboxSignUp = page.getByRole('textbox', { name: 'Username' });
     this.passwordTextboxSignUp = page.getByRole('textbox', { name: 'Password' });
     this.buttonSignUp = page.getByRole('button', { name: 'Sign up' });
+    this.buttonXSignUp = page.getByRole('dialog', { name: 'Sign up' }).getByLabel('Close');
+    this.buttonClose = page.getByLabel('Sign up').getByText('Close');
   }
 
   async goto() {
     await this.page.goto('https://www.demoblaze.com/index.html');
   }
 
-  async openSignUpModal() {
+  async topNavigationSignUp() {
     await this.linkSignUp.click();
-    await expect.soft(this.titleSignUp).toBeVisible();
   }
 
-  async validSignUp(password: string) {
-    const username = `silvija_${Date.now()}`;
+  async modalSignUp(username: string, password: string) {
     await this.usernameTextboxSignUp.fill(username);
     await this.passwordTextboxSignUp.fill(password);
-    await this.buttonSignUp.click();
-  }
-
-  async invalidSignUp(username: string, password: string) {
-    await this.usernameTextboxSignUp.fill(username);
-    await this.passwordTextboxSignUp.fill(password);
-    await this.buttonSignUp.click();
-  }
-
-  async userAlreadyExist(username: string, password: string) {
-    await this.usernameTextboxSignUp.fill(username);
-    await this.passwordTextboxSignUp.fill(password);
-    await this.buttonSignUp.click();
   }
 }
