@@ -1,49 +1,110 @@
 import { test, expect } from '@playwright/test';
-import { cartPage } from '../pages/cart';
+import { CartPage } from '../pages/cart';
 import { helpersPage } from '../pages/helpers';
-import { detailsAddToCart } from '../pages/detailsAddToCart';
+
+//Open product details
+test('Open product details for Samsung galaxy s6', async ({ page }) => {
+  const cartPage = new CartPage(page);
+
+  await cartPage.goto();
+  await cartPage.samsungGalaxy.click();
+  await expect.soft(cartPage.headingSamsungGalaxy).toBeVisible();
+  await expect.soft(cartPage.productDescriptionSamsung).toBeVisible();
+  await expect.soft(cartPage.priceSamsung).toBeVisible();
+  await expect(cartPage.linkAddToCart).toBeVisible();
+});
+
+//Add to cart - successfull
+test('Add one product to cart', async ({ page }) => {
+  const cartPage = new CartPage(page);
+  const alert = new helpersPage(page);
+
+  await cartPage.goto();
+  await cartPage.openProductDetails(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
+  await alert.verfiyAlertMessage('Product added');
+  await cartPage.linkAddToCart.click();
+});
+
+//Add to cart - more products
+test('Add to cart - more products', async ({ page }) => {
+  const cartPage = new CartPage(page);
+  const alert = new helpersPage(page);
+
+  await cartPage.goto();
+  await alert.verfiyAlertMessage('Product added');
+  await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
+  await cartPage.linkAddToCart.click();
+  await cartPage.productStore.click();
+  await alert.verfiyAlertMessage('Product added');
+  await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
+  await cartPage.linkAddToCart.click();
+  await cartPage.cartLink.click();
+});
 
 //Delete product from cart
 test('Delete products from cart', async ({ page }) => {
-  const cart = new cartPage(page);
-  const addToCart = new detailsAddToCart(page);
+  const cartPage = new CartPage(page);
 
-  await cart.goto();
-  await addToCart.addProductToCart(addToCart.samsungGalaxy, addToCart.headingSamsungGalaxy);
-  await cart.productStorePage();
-  await addToCart.addProductToCart(addToCart.nokiaLumia, addToCart.headingNokia);
-  await cart.topNavigationCart();
-  await expect(cart.deleteLink.first()).toBeVisible();
-  await expect(cart.deleteLink.nth(1)).toBeVisible();
-  await cart.deleteProductByName('Samsung galaxy s6');
-  await cart.deleteProductByName('Nokia lumia 1520');
-  await cart.expectCartToBeEmpty();
+  await cartPage.goto();
+  await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
+  await cartPage.linkAddToCart.click();
+  await cartPage.cartLink.click();
+  await cartPage.productStorePage();
+  await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
+  await cartPage.linkAddToCart.click();
+  await cartPage.cartLink.click();
+  await expect(cartPage.deleteLink).toHaveCount(2);
+  // await expect(cartPage.deleteLink.first()).toBeVisible();
+  // await expect(cartPage.deleteLink.nth(1)).toBeVisible();
+  await cartPage.deleteProductByName('Samsung galaxy s6');
+  await cartPage.deleteProductByName('Nokia lumia 1520');
+  await expect(cartPage.deleteLink).not.toBeVisible();
 });
 
-//Verify total amount - provjeriti
+//Verify total amount
 test('Verify total amount of added products to Cart', async ({ page }) => {
-  const cart = new cartPage(page);
-  const addToCart = new detailsAddToCart(page);
+  const cartPage = new CartPage(page);
 
-  await cart.goto();
-  await addToCart.addProductToCart(addToCart.samsungGalaxy, addToCart.headingSamsungGalaxy);
-  await cart.topNavigationCart();
-  await addToCart.productStore.click();
-  await addToCart.addProductToCart(addToCart.nokiaLumia, addToCart.headingNokia);
-  await cart.topNavigationCart();
-  const price1 = await cart.getProductPriceByName('Samsung galaxy s6');
-  const price2 = await cart.getProductPriceByName('Nokia lumia 1520');
+  await cartPage.goto();
+  await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
+  await cartPage.linkAddToCart.click();
+  await cartPage.cartLink.click();
+  await cartPage.productStore.click();
+  await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
+  await cartPage.linkAddToCart.click();
+  await cartPage.cartLink.click();
+  const price1 = await cartPage.getProductPriceByName('Samsung galaxy s6');
+  const price2 = await cartPage.getProductPriceByName('Nokia lumia 1520');
   const expectedTotal = price1 + price2;
-  const total = await cart.getTotalPrice();
+  const total = await cartPage.getTotalPrice();
   expect(total).toBe(expectedTotal);
 });
 
 //View empty cart screen
 test('View empty cart screen', async ({ page }) => {
-  const cart = new cartPage(page);
+  const cartPage = new CartPage(page);
 
-  await cart.goto();
-  await expect(cart.deleteLink).not.toBeVisible();
+  await cartPage.goto();
+  await expect(cartPage.deleteLink).not.toBeVisible();
+});
+
+test('Verify product details UI elements', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  await page.getByRole('link', { name: 'Samsung galaxy s6' }).click();
+  const locator = page.locator('div').filter({ hasText: 'Samsung galaxy s6$360 *' }).first();
+  await expect(locator).toHaveCSS('display', 'block');
+  await expect(locator).toHaveCSS('border-image-repeat', 'stretch');
+  await expect(locator).toHaveCSS('color', 'rgb(41, 43, 44)');
+});
+
+test('Verify Add to card button', async ({ page }) => {
+  await page.goto('https://www.demoblaze.com/index.html');
+  await page.getByRole('link', { name: 'Samsung galaxy s6' }).click();
+  const locator = page.getByRole('link', { name: 'Add to cart' });
+  await expect(locator).toHaveCSS('background-color', 'rgb(52, 168, 83)');
+  await expect(locator).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(locator).toHaveCSS('padding-bottom', '12px');
+  await expect(locator).toHaveCSS('padding-left', '24px');
 });
 
 test('Verify Cart screen UI elements', async ({ page }) => {

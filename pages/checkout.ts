@@ -46,11 +46,7 @@ export class checkoutPage {
     await this.page.goto('https://www.demoblaze.com/index.html');
   }
 
-  async topNavigationCart() {
-    await this.cartLink.click();
-  }
-
-  async placeOrderModal(
+  async fillPlaceOrderForm(
     name: string,
     country: string,
     city: string,

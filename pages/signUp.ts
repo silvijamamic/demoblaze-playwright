@@ -26,11 +26,7 @@ export class SignUpPage {
     await this.page.goto('https://www.demoblaze.com/index.html');
   }
 
-  async topNavigationSignUp() {
-    await this.linkSignUp.click();
-  }
-
-  async modalSignUp(username: string, password: string) {
+  async fillSignUpForm(username: string, password: string) {
     await this.usernameTextboxSignUp.fill(username);
     await this.passwordTextboxSignUp.fill(password);
   }

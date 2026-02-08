@@ -26,21 +26,8 @@ export class LoginPage {
     await this.page.goto('https://www.demoblaze.com/index.html');
   }
 
-  async topNavigationLogin() {
-    await this.loginLink.click();
-  }
-
-  async loginModal(username: string, password: string) {
+  async login(username: string, password: string) {
     await this.usernameTextbox.fill(username);
     await this.passwordTextbox.fill(password);
   }
-
-  //   async logout(username: string, password: string) {
-  //     await this.usernameTextbox.fill(username);
-  //     await this.passwordTextbox.fill(password);
-  //     await this.loginButton.click();
-  //     await expect.soft(this.page.getByRole('link', { name: 'Welcome silvijamamic' })).toBeVisible();
-  //     await this.logoutLink.click();
-  //     await expect.soft(this.loginButton).toBeVisible();
-  //   }
 }

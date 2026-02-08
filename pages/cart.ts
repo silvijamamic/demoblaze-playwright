@@ -1,6 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 
-export class cartPage {
+export class CartPage {
   readonly page: Page;
   readonly cartLink: Locator;
   readonly headingProducts: Locator;
@@ -9,6 +9,14 @@ export class cartPage {
   readonly deleteLink: Locator;
   readonly totalPrice: Locator;
   readonly productStore: Locator;
+  readonly headingSamsungGalaxy: Locator;
+  readonly linkAddToCart: Locator;
+  readonly nokiaLumia: Locator;
+  readonly samsungCart: Locator;
+  readonly nokiaCart: Locator;
+  readonly headingNokia: Locator;
+  readonly productDescriptionSamsung: Locator;
+  readonly priceSamsung: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -20,6 +28,15 @@ export class cartPage {
     this.deleteLink = page.getByRole('link', { name: 'Delete' });
     this.totalPrice = page.locator('#totalp');
     this.productStore = page.getByRole('link', { name: 'PRODUCT STORE' });
+    this.linkAddToCart = page.getByRole('link', { name: 'Add to cart' });
+    this.productStore = page.getByRole('link', { name: 'PRODUCT STORE' });
+    this.nokiaLumia = page.getByRole('link', { name: 'Nokia lumia 1520' });
+    this.samsungCart = page.getByRole('cell', { name: 'Samsung galaxy s6' });
+    this.nokiaCart = page.getByRole('cell', { name: 'Nokia lumia' });
+    this.headingSamsungGalaxy = page.getByRole('heading', { name: 'Samsung galaxy s6' });
+    this.headingNokia = page.getByRole('heading', { name: 'Nokia lumia' });
+    this.productDescriptionSamsung = page.getByText('The Samsung Galaxy S6 is');
+    this.priceSamsung = page.getByRole('heading', { name: '$360 *includes tax' });
   }
 
   async goto() {
@@ -29,20 +46,27 @@ export class cartPage {
   async productStorePage() {
     await this.productStore.click();
   }
-  async topNavigationCart() {
-    await this.cartLink.click();
+
+  async openProductDetails(product: Locator, productHeading: Locator) {
+    await product.click();
+    await productHeading.waitFor();
   }
 
+  async addProductToCart(product: Locator, productHeading: Locator) {
+    await product.click();
+    await productHeading.waitFor();
+    //await this.linkAddToCart.click();
+  }
   async getProductPriceByName(productName: string): Promise<number> {
     const row = this.page.locator('#tbodyid tr', { hasText: productName });
     await expect(row).toBeVisible();
     const priceText = await row.locator('td').nth(2).innerText(); //treća kolona
-    return Number(priceText.trim());
+    return Number(priceText);
   }
 
   async getTotalPrice(): Promise<number> {
-    const totalText = await this.totalPrice.innerText();
-    return Number(totalText.trim());
+    const totalPriceText = await this.totalPrice.innerText();
+    return Number(totalPriceText);
   }
 
   async deleteProductByName(productName: string) {
@@ -51,8 +75,8 @@ export class cartPage {
     await expect(row).toHaveCount(0);
   }
 
-  async expectCartToBeEmpty() {
-    const row = this.page.locator('#tbodyid tr');
-    await expect(row).toHaveCount(0);
-  }
+  // async expectCartToBeEmpty() {
+  //   const row = this.page.locator('#tbodyid tr');
+  //   await expect(row).toHaveCount(0);
+  // }
 }

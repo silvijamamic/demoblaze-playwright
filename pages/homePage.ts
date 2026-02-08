@@ -1,6 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 
-export class NavigationPage {
+export class HomePage {
   readonly page: Page;
   readonly loginLink: Locator;
   readonly homeLink: Locator;
@@ -58,15 +58,12 @@ export class NavigationPage {
     await this.page.goto('https://www.demoblaze.com/index.html');
   }
 
-  async navigateToCart() {
-    await this.cartLink.click();
-    await this.headingProducts.waitFor();
-  }
-  async getTitlesFromList(): Promise<string[]> {
-    return this.itemsList.locator('.card-title').allTextContents();
-  }
+  // async navigateToCart() {
+  //   await this.cartLink.click();
+  //   await this.headingProducts.waitFor();
+  // }
 
-  async carousel() {
+  async navigateCarousel() {
     await this.buttonNextCarousel.click();
     await this.buttonPrevoiusCarousel.click();
   }

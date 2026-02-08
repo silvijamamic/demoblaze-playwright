@@ -2,12 +2,12 @@ import { test, expect } from '@playwright/test';
 import { checkoutPage } from '../pages/checkout';
 import { helpersPage } from '../pages/helpers';
 
-//22. Open Place order modal
+//Open Place order modal
 test('Place order modal', async ({ page }) => {
   const checkout = new checkoutPage(page);
 
   await checkout.goto();
-  await checkout.topNavigationCart();
+  await checkout.cartLink.click();
   await checkout.buttonPlaceOrder.click();
   await expect.soft(checkout.headingPlaceOrder).toBeVisible();
   await expect.soft(checkout.textboxName).toBeVisible();
@@ -25,9 +25,16 @@ test('Purchase successful', async ({ page }) => {
   const checkout = new checkoutPage(page);
 
   await checkout.goto();
-  await checkout.topNavigationCart();
+  await checkout.cartLink.click();
   await checkout.buttonPlaceOrder.click();
-  await checkout.placeOrderModal('Silvija Mamic', 'Croatia', 'Zagreb', 'HR0000', 'January', '2026');
+  await checkout.fillPlaceOrderForm(
+    'Silvija Mamic',
+    'Croatia',
+    'Zagreb',
+    'HR0000',
+    'January',
+    '2026'
+  );
   await checkout.buttonPurchase.click();
   await expect.soft(checkout.thankYou).toBeVisible();
   await expect.soft(checkout.buttonOk).toBeVisible();
@@ -40,17 +47,11 @@ test('Purchase - mandatory fields', async ({ page }) => {
   const alert = new helpersPage(page);
 
   await checkout.goto();
-  await checkout.topNavigationCart();
+  await checkout.cartLink.click();
   await checkout.buttonPlaceOrder.click();
-  await checkout.placeOrderModal('', '', '', '', '', '');
-
-  // await Promise.all([
-  //   alert.alertDialog('Please fill out Name and Creditcard.'),
-  //   checkout.buttonPurchase.click(),
-  // ]);
-  await alert.alertDialog('Please fill out Name and Creditcard.', async () => {
-    await checkout.buttonPurchase.click();
-  });
+  await checkout.fillPlaceOrderForm('', '', '', '', '', '');
+  await alert.verfiyAlertMessage('Please fill out Name and Creditcard.');
+  await checkout.buttonPurchase.click();
 });
 
 //Close Place order modal on X button
@@ -58,7 +59,7 @@ test('Close Place order modal on X button', async ({ page }) => {
   const checkout = new checkoutPage(page);
 
   await checkout.goto();
-  await checkout.topNavigationCart();
+  await checkout.cartLink.click();
   await checkout.buttonPlaceOrder.click();
   await checkout.buttonXPlaceOrder.click();
 });
@@ -68,7 +69,7 @@ test('Close Place order modal on Close button', async ({ page }) => {
   const checkout = new checkoutPage(page);
 
   await checkout.goto();
-  await checkout.topNavigationCart();
+  await checkout.cartLink.click();
   await checkout.buttonPlaceOrder.click();
   await checkout.buttonPlaceOrderClose.click();
 });

@@ -4,74 +4,71 @@ import { helpersPage } from '../pages/helpers';
 
 //Open Sign Up modal
 test('Open Sign up modal', async ({ page }) => {
-  const signUp = new SignUpPage(page);
+  const signUpPage = new SignUpPage(page);
 
-  await signUp.goto();
-  await signUp.topNavigationSignUp();
-  await expect.soft(signUp.titleSignUp).toBeVisible();
-  await expect.soft(signUp.usernameTextboxSignUp).toBeVisible();
-  await expect.soft(signUp.passwordTextboxSignUp).toBeVisible();
-  await expect.soft(signUp.buttonXSignUp).toBeVisible();
-  await expect.soft(signUp.buttonSignUp).toBeVisible();
-  await expect.soft(signUp.buttonClose).toBeVisible();
+  await signUpPage.goto();
+  await signUpPage.linkSignUp.click();
+  await expect.soft(signUpPage.titleSignUp).toBeVisible();
+  await expect.soft(signUpPage.usernameTextboxSignUp).toBeVisible();
+  await expect.soft(signUpPage.passwordTextboxSignUp).toBeVisible();
+  await expect.soft(signUpPage.buttonXSignUp).toBeVisible();
+  await expect.soft(signUpPage.buttonSignUp).toBeVisible();
+  await expect.soft(signUpPage.buttonClose).toBeVisible();
 });
 
 //Valid Sign up
 test('Valid Sign up', async ({ page }) => {
-  const signUp = new SignUpPage(page);
+  const signUpPage = new SignUpPage(page);
   const username = `silvija_${Date.now()}`;
   const alert = new helpersPage(page);
 
-  await signUp.goto();
-  await signUp.topNavigationSignUp();
-  await signUp.modalSignUp(username, 'password123');
-  await alert.alertDialog('Sign up successful.', async () => {
-    await signUp.buttonSignUp.click();
-  });
+  await signUpPage.goto();
+  await signUpPage.linkSignUp.click();
+  await signUpPage.fillSignUpForm(username, 'password123');
+  await alert.verfiyAlertMessage('Sign up successful.');
+  await signUpPage.buttonSignUp.click();
 });
 
 //Invalid Sign up
 test('Invalid Sign up', async ({ page }) => {
-  const signUp = new SignUpPage(page);
+  const signUpPage = new SignUpPage(page);
   const alert = new helpersPage(page);
 
-  await signUp.goto();
-  await signUp.topNavigationSignUp();
-  await signUp.modalSignUp('', 'password123');
-  await alert.alertDialog('Please fill out Username and Password.', async () => {
-    await signUp.buttonSignUp.click();
-  });
+  await signUpPage.goto();
+  await signUpPage.linkSignUp.click();
+  await signUpPage.fillSignUpForm('', 'password123');
+  await alert.verfiyAlertMessage('Please fill out Username and Password.');
+  await signUpPage.buttonSignUp.click();
 });
 
 //User already exist
 test('User already exist', async ({ page }) => {
-  const signUp = new SignUpPage(page);
+  const signUpPage = new SignUpPage(page);
   const alert = new helpersPage(page);
 
-  await signUp.goto();
-  await signUp.topNavigationSignUp();
-  await signUp.modalSignUp('silvijamamic', 'password');
-  await alert.alertDialog('This user already exist.', async () => {
-    await signUp.buttonSignUp.click();
-  });
+  await signUpPage.goto();
+  await signUpPage.linkSignUp.click();
+  await signUpPage.fillSignUpForm('silvijamamic', 'password');
+  await alert.verfiyAlertMessage('This user already exist');
+  await signUpPage.buttonSignUp.click();
 });
 
 //Close SignUp modal on X
 test('Close Sign Up modal on X button', async ({ page }) => {
-  const signUp = new SignUpPage(page);
+  const signUpPage = new SignUpPage(page);
 
-  await signUp.goto();
-  await signUp.topNavigationSignUp();
-  await signUp.buttonXSignUp.click();
+  await signUpPage.goto();
+  await signUpPage.linkSignUp.click();
+  await signUpPage.buttonXSignUp.click();
 });
 
 //Close Sign Up modal on Close button
 test('Close Sign Up modal on Close button', async ({ page }) => {
-  const signUp = new SignUpPage(page);
+  const signUpPage = new SignUpPage(page);
 
-  await signUp.goto();
-  await signUp.topNavigationSignUp();
-  await signUp.buttonClose.click();
+  await signUpPage.goto();
+  await signUpPage.linkSignUp.click();
+  await signUpPage.buttonClose.click();
 });
 
 //Verify Sign Up UI modal
