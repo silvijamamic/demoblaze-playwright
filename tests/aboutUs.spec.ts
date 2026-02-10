@@ -1,46 +1,40 @@
-import { test, expect } from '@playwright/test';
-import { AboutUsPage } from '../pages/aboutUs';
+//import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures/basePage';
 
 //About us - open modal
-test('About us - open modal', async ({ page }) => {
-  const aboutUs = new AboutUsPage(page);
+test('About us - open modal', async ({ aboutUsPage }) => {
+  //const aboutUs = new AboutUsPage(page);
 
-  await aboutUs.goto();
-  await aboutUs.aboutUsLink.click();
-  await expect.soft(aboutUs.headingAboutUs).toBeVisible();
-  await expect.soft(aboutUs.video).toBeVisible();
-  await expect(aboutUs.closeAbout).toBeVisible();
+  await aboutUsPage.goto();
+  await aboutUsPage.aboutUsLink.click();
+  await expect.soft(aboutUsPage.headingAboutUs).toBeVisible();
+  await expect.soft(aboutUsPage.video).toBeVisible();
+  await expect(aboutUsPage.closeAbout).toBeVisible();
 });
 
 //About us - play video
-test('About us - play video', async ({ page }) => {
-  const aboutUs = new AboutUsPage(page);
-
-  await aboutUs.goto();
-  await aboutUs.aboutUsLink.click();
-  await expect.soft(aboutUs.headingAboutUs).toBeVisible();
-  await aboutUs.playVideo.click();
-  await aboutUs.closeAbout.click();
+test('About us - play video', async ({ aboutUsPage }) => {
+  await aboutUsPage.goto();
+  await aboutUsPage.aboutUsLink.click();
+  await expect.soft(aboutUsPage.headingAboutUs).toBeVisible();
+  await aboutUsPage.playVideo.click();
+  await aboutUsPage.closeAbout.click();
 });
 
 //About us - close on Close button
-test('About us - close on Close button', async ({ page }) => {
-  const aboutUs = new AboutUsPage(page);
-
-  await aboutUs.goto();
-  await aboutUs.aboutUsLink.click();
-  await expect.soft(aboutUs.headingAboutUs).toBeVisible();
-  await aboutUs.closeAbout.click();
+test('About us - close on Close button', async ({ aboutUsPage }) => {
+  await aboutUsPage.goto();
+  await aboutUsPage.aboutUsLink.click();
+  await expect.soft(aboutUsPage.headingAboutUs).toBeVisible();
+  await aboutUsPage.closeAbout.click();
 });
 
 //About us - close on X button
-test('About us - close on X button', async ({ page }) => {
-  const aboutUs = new AboutUsPage(page);
-
-  await aboutUs.goto();
-  await aboutUs.aboutUsLink.click();
-  await expect.soft(aboutUs.headingAboutUs).toBeVisible();
-  await aboutUs.closeXButtonAbout.click();
+test('About us - close on X button', async ({ aboutUsPage }) => {
+  await aboutUsPage.goto();
+  await aboutUsPage.aboutUsLink.click();
+  await expect.soft(aboutUsPage.headingAboutUs).toBeVisible();
+  await aboutUsPage.closeXButtonAbout.click();
 });
 
 test('Verify About us modal UI elements', async ({ page }) => {

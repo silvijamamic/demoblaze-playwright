@@ -1,10 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { ContactPage } from '../pages/contact';
-import { helpersPage } from '../pages/helpers';
+//import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures/basePage';
+//import { ContactPage } from '../pages/contact';
 
 //Contact - open contact modal
-test('Contact - open and send message', async ({ page }) => {
-  const contactPage = new ContactPage(page);
+test('Contact - open and send message', async ({ contactPage }) => {
+  //const contactPage = new ContactPage(page);
 
   await contactPage.goto();
   await contactPage.contactLink.click();
@@ -17,30 +17,23 @@ test('Contact - open and send message', async ({ page }) => {
 });
 
 //Contact - send message
-test('Contact - send message', async ({ page }) => {
-  const contactPage = new ContactPage(page);
-  const alert = new helpersPage(page);
-
+test('Contact - send message', async ({ contactPage, helpersPage }) => {
   await contactPage.goto();
   await contactPage.contactLink.click();
   await contactPage.fillContactForm('smamic.qa@gmail.com', 'Silvija Mamic', 'Hello World!');
-  await alert.verfiyAlertMessage('Thanks for the message!!');
+  await helpersPage.verfiyAlertMessage('Thanks for the message!!');
   await contactPage.buttonSendMessage.click();
 });
 
 //Contact - close modal on Close button
-test('Contact - close modal on Close button', async ({ page }) => {
-  const contactPage = new ContactPage(page);
-
+test('Contact - close modal on Close button', async ({ contactPage }) => {
   await contactPage.goto();
   await contactPage.contactLink.click();
   await contactPage.closeNewMessage.click();
 });
 
 //Close modal on X button
-test('Contact - close modal on X button', async ({ page }) => {
-  const contactPage = new ContactPage(page);
-
+test('Contact - close modal on X button', async ({ contactPage }) => {
   await contactPage.goto();
   await contactPage.contactLink.click();
   await contactPage.closeXButtonContact.click();

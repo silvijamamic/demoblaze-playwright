@@ -1,9 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { HomePage } from '../pages/homePage';
+//import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures/basePage';
+//import { HomePage } from '../pages/homePage';
 
 //Open home page
-test('Open Home page', async ({ page }) => {
-  const homePage = new HomePage(page);
+test('Open Home page', async ({ homePage }) => {
+  //const homePage = new HomePage(page);
 
   await homePage.goto();
   await expect.soft(homePage.productStore).toBeVisible();
@@ -16,18 +17,14 @@ test('Open Home page', async ({ page }) => {
 });
 
 //Categories-show list of Phones
-test('Phones list is displayed', async ({ page }) => {
-  const homePage = new HomePage(page);
-
+test('Phones list is displayed', async ({ homePage }) => {
   await homePage.goto();
   await homePage.phonesCategory.click();
   await expect.soft(homePage.samsungGalaxy).toBeVisible();
   await expect(homePage.sonyVaio).not.toBeVisible();
 });
 //Categories-show list of Laptops
-test('Laptops list is displayed', async ({ page }) => {
-  const homePage = new HomePage(page);
-
+test('Laptops list is displayed', async ({ homePage }) => {
   await homePage.goto();
   await homePage.laptopsCategory.click();
   await expect.soft(homePage.sonyVaio).toBeVisible();
@@ -35,9 +32,7 @@ test('Laptops list is displayed', async ({ page }) => {
 });
 
 //Categories-show list of Monitors
-test('Monitors list is displayed', async ({ page }) => {
-  const homePage = new HomePage(page);
-
+test('Monitors list is displayed', async ({ homePage }) => {
   await homePage.goto();
   await homePage.monitorsCategory.click();
   await expect.soft(homePage.appleMonitor).toBeVisible();
@@ -45,9 +40,7 @@ test('Monitors list is displayed', async ({ page }) => {
 });
 
 //Pagination
-test('Verify next and previous button in pagination', async ({ page }) => {
-  const homePage = new HomePage(page);
-
+test('Verify next and previous button in pagination', async ({ homePage }) => {
   await homePage.goto();
   await expect.soft(homePage.samsungGalaxy).toBeVisible();
   await homePage.buttonNext.click();
@@ -57,9 +50,7 @@ test('Verify next and previous button in pagination', async ({ page }) => {
 });
 
 //Carousel
-test('Verify next and previous button in carousel', async ({ page }) => {
-  const homePage = new HomePage(page);
-
+test('Verify next and previous button in carousel', async ({ homePage }) => {
   await homePage.goto();
   await homePage.navigateCarousel();
 });

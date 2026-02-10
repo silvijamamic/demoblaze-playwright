@@ -1,33 +1,28 @@
-import { test, expect } from '@playwright/test';
-import { checkoutPage } from '../pages/checkout';
-import { helpersPage } from '../pages/helpers';
+//import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures/basePage';
 
 //Open Place order modal
-test('Place order modal', async ({ page }) => {
-  const checkout = new checkoutPage(page);
-
-  await checkout.goto();
-  await checkout.cartLink.click();
-  await checkout.buttonPlaceOrder.click();
-  await expect.soft(checkout.headingPlaceOrder).toBeVisible();
-  await expect.soft(checkout.textboxName).toBeVisible();
-  await expect.soft(checkout.textboxCountry).toBeVisible();
-  await expect.soft(checkout.textboxCity).toBeVisible();
-  await expect.soft(checkout.textboxCreditCard).toBeVisible();
-  await expect.soft(checkout.textboxMonth).toBeVisible();
-  await expect.soft(checkout.textboxYear).toBeVisible();
-  await expect.soft(checkout.buttonPlaceOrderClose).toBeVisible();
-  await expect.soft(checkout.buttonPurchase).toBeVisible();
+test('Place order modal', async ({ checkoutPage }) => {
+  await checkoutPage.goto();
+  await checkoutPage.cartLink.click();
+  await checkoutPage.buttonPlaceOrder.click();
+  await expect.soft(checkoutPage.headingPlaceOrder).toBeVisible();
+  await expect.soft(checkoutPage.textboxName).toBeVisible();
+  await expect.soft(checkoutPage.textboxCountry).toBeVisible();
+  await expect.soft(checkoutPage.textboxCity).toBeVisible();
+  await expect.soft(checkoutPage.textboxCreditCard).toBeVisible();
+  await expect.soft(checkoutPage.textboxMonth).toBeVisible();
+  await expect.soft(checkoutPage.textboxYear).toBeVisible();
+  await expect.soft(checkoutPage.buttonPlaceOrderClose).toBeVisible();
+  await expect.soft(checkoutPage.buttonPurchase).toBeVisible();
 });
 
 //Purchase successful
-test('Purchase successful', async ({ page }) => {
-  const checkout = new checkoutPage(page);
-
-  await checkout.goto();
-  await checkout.cartLink.click();
-  await checkout.buttonPlaceOrder.click();
-  await checkout.fillPlaceOrderForm(
+test('Purchase successful', async ({ checkoutPage }) => {
+  await checkoutPage.goto();
+  await checkoutPage.cartLink.click();
+  await checkoutPage.buttonPlaceOrder.click();
+  await checkoutPage.fillPlaceOrderForm(
     'Silvija Mamic',
     'Croatia',
     'Zagreb',
@@ -35,43 +30,36 @@ test('Purchase successful', async ({ page }) => {
     'January',
     '2026'
   );
-  await checkout.buttonPurchase.click();
-  await expect.soft(checkout.thankYou).toBeVisible();
-  await expect.soft(checkout.buttonOk).toBeVisible();
-  await checkout.buttonOk.click();
+  await checkoutPage.buttonPurchase.click();
+  await expect.soft(checkoutPage.thankYou).toBeVisible();
+  await expect.soft(checkoutPage.buttonOk).toBeVisible();
+  await checkoutPage.buttonOk.click();
 });
 
 //Purchase - mandatory fields
-test('Purchase - mandatory fields', async ({ page }) => {
-  const checkout = new checkoutPage(page);
-  const alert = new helpersPage(page);
-
-  await checkout.goto();
-  await checkout.cartLink.click();
-  await checkout.buttonPlaceOrder.click();
-  await checkout.fillPlaceOrderForm('', '', '', '', '', '');
-  await alert.verfiyAlertMessage('Please fill out Name and Creditcard.');
-  await checkout.buttonPurchase.click();
+test('Purchase - mandatory fields', async ({ checkoutPage, helpersPage }) => {
+  await checkoutPage.goto();
+  await checkoutPage.cartLink.click();
+  await checkoutPage.buttonPlaceOrder.click();
+  await checkoutPage.fillPlaceOrderForm('', '', '', '', '', '');
+  await helpersPage.verfiyAlertMessage('Please fill out Name and Creditcard.');
+  await checkoutPage.buttonPurchase.click();
 });
 
 //Close Place order modal on X button
-test('Close Place order modal on X button', async ({ page }) => {
-  const checkout = new checkoutPage(page);
-
-  await checkout.goto();
-  await checkout.cartLink.click();
-  await checkout.buttonPlaceOrder.click();
-  await checkout.buttonXPlaceOrder.click();
+test('Close Place order modal on X button', async ({ checkoutPage }) => {
+  await checkoutPage.goto();
+  await checkoutPage.cartLink.click();
+  await checkoutPage.buttonPlaceOrder.click();
+  await checkoutPage.buttonXPlaceOrder.click();
 });
 
 //Close Place order modal on Close button
-test('Close Place order modal on Close button', async ({ page }) => {
-  const checkout = new checkoutPage(page);
-
-  await checkout.goto();
-  await checkout.cartLink.click();
-  await checkout.buttonPlaceOrder.click();
-  await checkout.buttonPlaceOrderClose.click();
+test('Close Place order modal on Close button', async ({ checkoutPage }) => {
+  await checkoutPage.goto();
+  await checkoutPage.cartLink.click();
+  await checkoutPage.buttonPlaceOrder.click();
+  await checkoutPage.buttonPlaceOrderClose.click();
 });
 
 test('Verify Place order bottom sheet', async ({ page }) => {

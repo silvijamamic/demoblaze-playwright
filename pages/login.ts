@@ -9,6 +9,7 @@ export class LoginPage {
   readonly closeButton: Locator;
   readonly logoutLink: Locator;
   readonly xButton: Locator;
+  readonly welcome: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -20,6 +21,7 @@ export class LoginPage {
     this.closeButton = page.getByLabel('Log in').getByText('Close');
     this.logoutLink = page.getByRole('link', { name: 'Log out' });
     this.xButton = page.getByRole('dialog', { name: 'Log in' }).getByLabel('Close');
+    this.welcome = page.getByRole('link', { name: 'Welcome silvijamamic' });
   }
 
   async goto() {

@@ -1,10 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { CartPage } from '../pages/cart';
-import { helpersPage } from '../pages/helpers';
+//import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures/basePage';
+//import { CartPage } from '../pages/cart';
 
 //Open product details
-test('Open product details for Samsung galaxy s6', async ({ page }) => {
-  const cartPage = new CartPage(page);
+test('Open product details for Samsung galaxy s6', async ({ cartPage }) => {
+  //const cartPage = new CartPage(page);
 
   await cartPage.goto();
   await cartPage.samsungGalaxy.click();
@@ -15,36 +15,28 @@ test('Open product details for Samsung galaxy s6', async ({ page }) => {
 });
 
 //Add to cart - successfull
-test('Add one product to cart', async ({ page }) => {
-  const cartPage = new CartPage(page);
-  const alert = new helpersPage(page);
-
+test('Add one product to cart', async ({ cartPage, helpersPage }) => {
   await cartPage.goto();
   await cartPage.openProductDetails(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
-  await alert.verfiyAlertMessage('Product added');
+  await helpersPage.verfiyAlertMessage('Product added');
   await cartPage.linkAddToCart.click();
 });
 
 //Add to cart - more products
-test('Add to cart - more products', async ({ page }) => {
-  const cartPage = new CartPage(page);
-  const alert = new helpersPage(page);
-
+test('Add to cart - more products', async ({ cartPage, helpersPage }) => {
   await cartPage.goto();
-  await alert.verfiyAlertMessage('Product added');
+  await helpersPage.verfiyAlertMessage('Product added');
   await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
   await cartPage.linkAddToCart.click();
   await cartPage.productStore.click();
-  await alert.verfiyAlertMessage('Product added');
+  await helpersPage.verfiyAlertMessage('Product added');
   await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
   await cartPage.linkAddToCart.click();
   await cartPage.cartLink.click();
 });
 
 //Delete product from cart
-test('Delete products from cart', async ({ page }) => {
-  const cartPage = new CartPage(page);
-
+test('Delete products from cart', async ({ cartPage }) => {
   await cartPage.goto();
   await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
   await cartPage.linkAddToCart.click();
@@ -62,9 +54,7 @@ test('Delete products from cart', async ({ page }) => {
 });
 
 //Verify total amount
-test('Verify total amount of added products to Cart', async ({ page }) => {
-  const cartPage = new CartPage(page);
-
+test('Verify total amount of added products to Cart', async ({ cartPage }) => {
   await cartPage.goto();
   await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
   await cartPage.linkAddToCart.click();
@@ -81,9 +71,7 @@ test('Verify total amount of added products to Cart', async ({ page }) => {
 });
 
 //View empty cart screen
-test('View empty cart screen', async ({ page }) => {
-  const cartPage = new CartPage(page);
-
+test('View empty cart screen', async ({ cartPage }) => {
   await cartPage.goto();
   await expect(cartPage.deleteLink).not.toBeVisible();
 });
