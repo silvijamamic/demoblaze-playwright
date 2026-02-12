@@ -26,8 +26,6 @@ test('Valid log in', async ({ loginPage }) => {
 
 //Wrong password
 test('Wrong password', async ({ loginPage, helpersPage }) => {
-  //const alert = new helpersPage(page);
-
   await loginPage.goto();
   await loginPage.loginLink.click();
   await loginPage.login('silvijamamic', '1234');

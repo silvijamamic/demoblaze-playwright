@@ -17,6 +17,10 @@ export class CartPage {
   readonly headingNokia: Locator;
   readonly productDescriptionSamsung: Locator;
   readonly priceSamsung: Locator;
+  readonly emptyCart: Locator;
+  readonly samsungGalaxyCart: Locator;
+  readonly samsungGalaxyDetails: Locator;
+  readonly placeOrderModal: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -37,6 +41,13 @@ export class CartPage {
     this.headingNokia = page.getByRole('heading', { name: 'Nokia lumia' });
     this.productDescriptionSamsung = page.getByText('The Samsung Galaxy S6 is');
     this.priceSamsung = page.getByRole('heading', { name: '$360 *includes tax' });
+    this.emptyCart = page.locator('#page-wrapper');
+    this.samsungGalaxyCart = page.getByText('Products Pic Title Price x');
+    this.samsungGalaxyDetails = page
+      .locator('div')
+      .filter({ hasText: 'Samsung galaxy s6$360 *' })
+      .first();
+    this.placeOrderModal = page.getByRole('dialog', { name: 'Place order' });
   }
 
   async goto() {
@@ -47,10 +58,10 @@ export class CartPage {
     await this.productStore.click();
   }
 
-  async openProductDetails(product: Locator, productHeading: Locator) {
-    await product.click();
-    await productHeading.waitFor();
-  }
+  // async openProductDetails(product: Locator, productHeading: Locator) {
+  //   await product.click();
+  //   await productHeading.waitFor();
+  // }
 
   async addProductToCart(product: Locator, productHeading: Locator) {
     await product.click();

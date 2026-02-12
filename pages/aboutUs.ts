@@ -9,6 +9,9 @@ export class AboutUsPage {
   readonly closeXButtonAbout: Locator;
   readonly playVideo: Locator;
   readonly headingAboutUs: Locator;
+  readonly aboutUsModal: Locator;
+  readonly aboutUsHeader: Locator;
+  readonly aboutUsFooter: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -20,6 +23,11 @@ export class AboutUsPage {
     this.closeXButtonAbout = page.locator('#videoModal').getByLabel('Close');
     this.playVideo = page.getByRole('button', { name: 'Play Video' });
     this.headingAboutUs = page.getByRole('heading', { name: 'About us', exact: true });
+    this.aboutUsModal = page.locator('#videoModal');
+    this.aboutUsFooter = page.locator(
+      '#videoModal > .modal-dialog > .modal-content > .modal-footer'
+    );
+    this.aboutUsHeader = page.getByText('About us ×');
   }
 
   async goto() {

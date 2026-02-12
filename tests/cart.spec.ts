@@ -17,7 +17,7 @@ test('Open product details for Samsung galaxy s6', async ({ cartPage }) => {
 //Add to cart - successfull
 test('Add one product to cart', async ({ cartPage, helpersPage }) => {
   await cartPage.goto();
-  await cartPage.openProductDetails(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
+  await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
   await helpersPage.verfiyAlertMessage('Product added');
   await cartPage.linkAddToCart.click();
 });
@@ -54,7 +54,7 @@ test('Delete products from cart', async ({ cartPage }) => {
 });
 
 //Verify total amount
-test('Verify total amount of added products to Cart', async ({ cartPage }) => {
+test('Verify total amount of added products to Cart', async ({ cartPage, page }) => {
   await cartPage.goto();
   await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
   await cartPage.linkAddToCart.click();

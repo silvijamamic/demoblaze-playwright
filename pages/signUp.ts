@@ -9,6 +9,7 @@ export class SignUpPage {
   readonly buttonSignUp: Locator;
   readonly buttonXSignUp: Locator;
   readonly buttonClose: Locator;
+  readonly signUpModal: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -20,6 +21,7 @@ export class SignUpPage {
     this.buttonSignUp = page.getByRole('button', { name: 'Sign up' });
     this.buttonXSignUp = page.getByRole('dialog', { name: 'Sign up' }).getByLabel('Close');
     this.buttonClose = page.getByLabel('Sign up').getByText('Close');
+    this.signUpModal = page.getByRole('dialog', { name: 'Sign up' });
   }
 
   async goto() {
