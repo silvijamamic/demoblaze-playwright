@@ -36,7 +36,7 @@ test('Add to cart - more products', async ({ cartPage, helpersPage }) => {
 });
 
 //Delete product from cart
-test('Delete products from cart', async ({ cartPage }) => {
+test('Delete products from cart', async ({ cartPage, page }) => {
   await cartPage.goto();
   await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
   await cartPage.linkAddToCart.click();
@@ -45,14 +45,16 @@ test('Delete products from cart', async ({ cartPage }) => {
   await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
   await cartPage.linkAddToCart.click();
   await cartPage.cartLink.click();
-  await expect(cartPage.deleteLink).toHaveCount(2);
-  // await expect(cartPage.deleteLink.first()).toBeVisible();
-  // await expect(cartPage.deleteLink.nth(1)).toBeVisible();
-  await cartPage.deleteProductByName('Samsung galaxy s6');
-  await cartPage.deleteProductByName('Nokia lumia 1520');
+
+  await cartPage.deleteProductsFromCart();
   await expect(cartPage.deleteLink).not.toBeVisible();
 });
 
+//await expect(cartPage.deleteLink).toHaveCount(2);
+// await expect(cartPage.deleteLink.first()).toBeVisible();
+// await expect(cartPage.deleteLink.nth(1)).toBeVisible();
+//await cartPage.deleteProductByName('Samsung galaxy s6');
+//await cartPage.deleteProductByName('Nokia lumia 1520');
 //Verify total amount
 test('Verify total amount of added products to Cart', async ({ cartPage, page }) => {
   await cartPage.goto();

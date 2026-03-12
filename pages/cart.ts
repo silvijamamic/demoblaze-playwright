@@ -58,11 +58,6 @@ export class CartPage {
     await this.productStore.click();
   }
 
-  // async openProductDetails(product: Locator, productHeading: Locator) {
-  //   await product.click();
-  //   await productHeading.waitFor();
-  // }
-
   async addProductToCart(product: Locator, productHeading: Locator) {
     await product.click();
     await productHeading.waitFor();
@@ -80,14 +75,17 @@ export class CartPage {
     return Number(totalPriceText);
   }
 
-  async deleteProductByName(productName: string) {
-    const row = this.page.locator('#tbodyid tr', { hasText: productName });
-    await row.getByRole('link', { name: 'Delete' }).click();
-    await expect(row).toHaveCount(0);
-  }
-
-  // async expectCartToBeEmpty() {
-  //   const row = this.page.locator('#tbodyid tr');
+  // async deleteProductByName(productName: string) {
+  //   const row = this.page.locator('#tbodyid tr', { hasText: productName });
+  //   await row.getByRole('link', { name: 'Delete' }).click();
   //   await expect(row).toHaveCount(0);
   // }
+
+  async deleteProductsFromCart() {
+    while ((await this.deleteLink.count()) > 0) {
+      const currentCount = await this.deleteLink.count();
+      await this.deleteLink.first().click();
+      await expect(this.deleteLink).toHaveCount(currentCount - 1);
+    }
+  }
 }
