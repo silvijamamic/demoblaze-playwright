@@ -61,7 +61,6 @@ export class CartPage {
   async addProductToCart(product: Locator, productHeading: Locator) {
     await product.click();
     await productHeading.waitFor();
-    //await this.linkAddToCart.click();
   }
   async getProductPriceByName(productName: string): Promise<number> {
     const row = this.page.locator('#tbodyid tr', { hasText: productName });

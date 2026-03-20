@@ -56,8 +56,9 @@ test('Delete products from cart', async ({ cartPage, page }) => {
 //await cartPage.deleteProductByName('Samsung galaxy s6');
 //await cartPage.deleteProductByName('Nokia lumia 1520');
 //Verify total amount
-test('Verify total amount of added products to Cart', async ({ cartPage, page }) => {
+test.only('Verify total amount of added products to Cart', async ({ cartPage, page }) => {
   await cartPage.goto();
+  await page.pause();
   await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
   await cartPage.linkAddToCart.click();
   await cartPage.cartLink.click();
