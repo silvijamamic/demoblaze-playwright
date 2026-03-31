@@ -1,56 +1,63 @@
 import { test, expect } from '../fixtures/basePage';
 
 test('Home page loads successfully', async ({ page, homePage }) => {
-  page.on('response', (response) => {
-    if (response.url().includes('index.html')) {
-      expect(response.status()).toBe(200);
-    }
-  });
+  const responsePromise = page.waitForResponse((response) => response.url().includes('index.html'));
 
   await homePage.goto();
+
+  const response = await responsePromise;
+  expect(response.status()).toBe(200);
   await expect(homePage.productStore).toBeVisible();
 });
 
-test('Clicking Next triggers pagination response', async ({ page, homePage }) => {
+test('Clicking Next loads next page of products', async ({ page, homePage }) => {
   await homePage.goto();
 
   const responsePromise = page.waitForResponse(
-    (response) => response.url().includes('/pagination') && response.request().method() === 'POST'
+    (response) => response.url().includes('/pagination') && response.request().method() === 'POST',
+    { timeout: 60000 }
   );
 
   await homePage.buttonNext.click();
-  const response = await responsePromise;
-  expect(response.status()).toBe(200);
+  await responsePromise;
+
+  await expect(homePage.macBookAir).toBeVisible();
+  await expect(homePage.samsungGalaxy).not.toBeVisible();
 });
 
-test('Add to cart sends product id', async ({ page, cartPage, homePage, helpersPage }) => {
-  page.on('request', (request) => {
-    if (request.url().includes('/addtocart') && request.method() === 'POST') {
-      const body = request.postDataJSON();
-
-      expect(body).toHaveProperty('prod_id');
-      expect(body.flag).toBe(false);
-    }
-  });
-
+test('Add to cart sends product id', async ({ page, cartPage, helpersPage }) => {
   await cartPage.goto();
   await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
 
-  await helpersPage.verfiyAlertMessage('Product added');
+  const requestPromise = page.waitForRequest(
+    (request) => request.url().includes('/addtocart') && request.method() === 'POST'
+  );
+
   await cartPage.linkAddToCart.click();
+
+  const request = await requestPromise;
+  const body = request.postDataJSON();
+
+  expect(body).toHaveProperty('prod_id');
+  expect(body.flag).toBe(false);
+
+  await helpersPage.verfiyAlertMessage('Product added');
 });
 
-test('Opening any product details triggers producet details request', async ({
+test('Opening any product details triggers product details request', async ({
   page,
   homePage,
   cartPage,
 }) => {
-  const detailsResponse = page.waitForResponse(
-    (response) => response.url().includes('/view') && response.ok()
+  const detailsResponsePromise = page.waitForResponse(
+    (response) => response.url().includes('/view') && response.request().method() === 'POST'
   );
 
   await homePage.goto();
   await homePage.samsungGalaxy.click();
+
+  const detailsResponse = await detailsResponsePromise;
+  expect(detailsResponse.ok()).toBeTruthy();
   await expect(cartPage.linkAddToCart).toBeVisible();
 });
 
@@ -63,7 +70,7 @@ test('Clicking Laptops loads laptop products', async ({ page, homePage }) => {
 
   await homePage.laptopsCategory.click();
   const response = await responsePromise;
-  expect(response.ok()).toBeTruthy;
+  expect(response.ok()).toBeTruthy();
 });
 
 test('Opening cart triggers successful response', async ({ page, homePage }) => {

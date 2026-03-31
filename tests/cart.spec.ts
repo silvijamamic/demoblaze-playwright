@@ -50,22 +50,19 @@ test('Delete products from cart', async ({ cartPage, page }) => {
   await expect(cartPage.deleteLink).not.toBeVisible();
 });
 
-//await expect(cartPage.deleteLink).toHaveCount(2);
-// await expect(cartPage.deleteLink.first()).toBeVisible();
-// await expect(cartPage.deleteLink.nth(1)).toBeVisible();
-//await cartPage.deleteProductByName('Samsung galaxy s6');
-//await cartPage.deleteProductByName('Nokia lumia 1520');
-//Verify total amount
-test.only('Verify total amount of added products to Cart', async ({ cartPage, page }) => {
+test('Verify total amount of added products to Cart', async ({ cartPage, page, helpersPage }) => {
   await cartPage.goto();
-  await page.pause();
   await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
+  await helpersPage.verfiyAlertMessage('Product added');
   await cartPage.linkAddToCart.click();
   await cartPage.cartLink.click();
+  await expect(cartPage.headingProducts).toBeVisible();
   await cartPage.productStore.click();
   await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
+  await helpersPage.verfiyAlertMessage('Product added');
   await cartPage.linkAddToCart.click();
   await cartPage.cartLink.click();
+  await expect(cartPage.headingProducts).toBeVisible();
   const price1 = await cartPage.getProductPriceByName('Samsung galaxy s6');
   const price2 = await cartPage.getProductPriceByName('Nokia lumia 1520');
   const expectedTotal = price1 + price2;

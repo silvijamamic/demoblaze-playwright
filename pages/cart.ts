@@ -74,12 +74,6 @@ export class CartPage {
     return Number(totalPriceText);
   }
 
-  // async deleteProductByName(productName: string) {
-  //   const row = this.page.locator('#tbodyid tr', { hasText: productName });
-  //   await row.getByRole('link', { name: 'Delete' }).click();
-  //   await expect(row).toHaveCount(0);
-  // }
-
   async deleteProductsFromCart() {
     while ((await this.deleteLink.count()) > 0) {
       const currentCount = await this.deleteLink.count();
