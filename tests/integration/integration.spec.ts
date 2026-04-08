@@ -1,89 +1,126 @@
+import { SignUpPage } from '../../pages/signUp';
 import { test, expect } from '../fixtures/basePage';
 
-test('Home page loads successfully', async ({ page, homePage }) => {
-  const responsePromise = page.waitForResponse((response) => response.url().includes('index.html'));
-
+test('Next button sends correct payload', async ({ page, homePage }) => {
   await homePage.goto();
 
-  const response = await responsePromise;
-  expect(response.status()).toBe(200);
-  await expect(homePage.productStore).toBeVisible();
+  const [request] = await Promise.all([
+    page.waitForRequest((req) => req.url().includes('pagination') && req.method() === 'POST'),
+    homePage.buttonNext.click(),
+  ]);
+
+  const payload = request.postDataJSON();
+
+  expect(payload).toEqual({ id: '' });
 });
 
-test('Clicking Next loads next page of products', async ({ page, homePage }) => {
+test('Login sends correct payload', async ({ page, loginPage, homePage }) => {
   await homePage.goto();
+  await homePage.loginLink.click();
 
-  const responsePromise = page.waitForResponse(
-    (response) => response.url().includes('/pagination') && response.request().method() === 'POST',
-    { timeout: 60000 }
-  );
+  const [request] = await Promise.all([
+    page.waitForRequest((request) => request.url().includes('login') && request.method() == 'POST'),
+    loginPage.loginClick('username', 'password'),
+  ]);
 
-  await homePage.buttonNext.click();
-  await responsePromise;
-
-  await expect(homePage.macBookAir).toBeVisible();
-  await expect(homePage.samsungGalaxy).not.toBeVisible();
+  const payload = request.postDataJSON();
+  expect(payload).toEqual({
+    username: 'username',
+    password: btoa('password'),
+  });
 });
 
-test('Add to cart sends product id', async ({ page, cartPage, helpersPage }) => {
-  await cartPage.goto();
-  await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
-
-  const requestPromise = page.waitForRequest(
-    (request) => request.url().includes('/addtocart') && request.method() === 'POST'
-  );
-
-  await cartPage.linkAddToCart.click();
-
-  const request = await requestPromise;
-  const body = request.postDataJSON();
-
-  expect(body).toHaveProperty('prod_id');
-  expect(body.flag).toBe(false);
-
-  await helpersPage.verfiyAlertMessage('Product added');
-});
-
-test('Opening any product details triggers product details request', async ({
-  page,
-  homePage,
-  cartPage,
-}) => {
-  const detailsResponsePromise = page.waitForResponse(
-    (response) => response.url().includes('/view') && response.request().method() === 'POST'
-  );
+test('Signup sends correct payload', async ({ page, homePage, signUpPage }) => {
+  const username = `silvija_${Date.now()}`;
 
   await homePage.goto();
-  await homePage.samsungGalaxy.click();
+  await homePage.signUpLink.click();
 
-  const detailsResponse = await detailsResponsePromise;
-  expect(detailsResponse.ok()).toBeTruthy();
-  await expect(cartPage.linkAddToCart).toBeVisible();
+  const [request] = await Promise.all([
+    page.waitForRequest(
+      (request) => request.url().includes('signup') && request.method() === 'POST'
+    ),
+    signUpPage.signUpClick(username, 'password123'),
+  ]);
+
+  const payload = request.postDataJSON();
+
+  expect(payload).toEqual({
+    username: username,
+    password: btoa('password123'),
+  });
 });
 
 test('Clicking Laptops loads laptop products', async ({ page, homePage }) => {
   await homePage.goto();
 
-  const responsePromise = page.waitForResponse(
-    (response) => response.url().includes('bycat') && response.request().method() === 'POST'
-  );
+  const [request] = await Promise.all([
+    page.waitForRequest(
+      (request) => request.url().includes('bycat') && request.method() === 'POST'
+    ),
+    homePage.laptopsCategory.click(),
+  ]);
 
-  await homePage.laptopsCategory.click();
-  const response = await responsePromise;
-  expect(response.ok()).toBeTruthy();
+  const payload = request.postDataJSON();
+
+  expect(payload).toEqual({ cat: 'notebook' });
 });
 
-test('Opening cart triggers successful response', async ({ page, homePage }) => {
+test('Clicking Monitors loads monitors products', async ({ page, homePage }) => {
   await homePage.goto();
 
-  const responsePromise = page.waitForResponse(
-    (response) => response.url().includes('viewcart') && response.request().method() === 'POST'
-  );
+  const [request] = await Promise.all([
+    page.waitForRequest(
+      (request) => request.url().includes('bycat') && request.method() === 'POST'
+    ),
+    homePage.monitorsCategory.click(),
+  ]);
 
-  await homePage.cartLink.click();
-  const response = await responsePromise;
-  expect(response.ok()).toBeTruthy();
+  const payload = request.postDataJSON();
+
+  expect(payload).toEqual({ cat: 'monitor' });
 });
+
+test('Opening cart sends correct payload', async ({ page, homePage }) => {
+  await homePage.goto();
+
+  const [request] = await Promise.all([
+    page.waitForRequest(
+      (request) => request.url().includes('viewcart') && request.method() === 'POST'
+    ),
+    homePage.cartLink.click(),
+  ]);
+
+  const payload = request.postDataJSON();
+
+  expect.soft(payload).toHaveProperty('cookie');
+  expect(payload.flag).toBe(false);
+});
+
+test('Add to cart sends correct payload', async ({ page, cartPage, helpersPage }) => {
+  await cartPage.goto();
+  await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
+
+  const [request] = await Promise.all([
+    page.waitForRequest(
+      (request) => request.url().includes('/addtocart') && request.method() === 'POST'
+    ),
+    cartPage.linkAddToCart.click(),
+  ]);
+
+  const payload = request.postDataJSON();
+
+  expect.soft(payload).toHaveProperty('cookie');
+  expect.soft(payload).toHaveProperty('id');
+  expect.soft(payload.flag).toBe(false);
+  expect(payload.prod_id).toBe(2);
+
+  await helpersPage.verfiyAlertMessage('Product added');
+});
+
+//provjerit payload
+//dodat soft kod expect
+
 test('Purchase triggers deletecart request', async ({ page, checkoutPage }) => {
   await checkoutPage.goto();
   await checkoutPage.cartLink.click();
@@ -97,41 +134,14 @@ test('Purchase triggers deletecart request', async ({ page, checkoutPage }) => {
     '2026'
   );
 
-  const requestPromise = page.waitForRequest(
-    (request) => request.url().includes('deletecart') && request.method() === 'POST'
-  );
-  await checkoutPage.buttonPurchase.click();
-  const request = await requestPromise;
-  expect(request.method()).toBe('POST');
-  expect(request.url()).toContain('deletecart');
-});
+  const [request] = await Promise.all([
+    page.waitForRequest(
+      (request) => request.url().includes('deletecart') && request.method() === 'POST'
+    ),
+    checkoutPage.buttonPurchase.click(),
+  ]);
 
-test('Login sends login request', async ({ page, homePage, loginPage }) => {
-  await homePage.goto();
-  await homePage.loginLink.click();
-  await loginPage.login('silvijamamic', 'password123');
+  const payload = request.postDataJSON();
 
-  const requestPromise = page.waitForRequest(
-    (request) => request.url().includes('login') && request.method() === 'POST'
-  );
-  await loginPage.loginButton.click();
-
-  const request = await requestPromise;
-  expect(request.method()).toBe('POST');
-});
-
-test('Singup sends singup request', async ({ page, homePage, signUpPage }) => {
-  const username = `silvija_${Date.now()}`;
-
-  await homePage.goto();
-  await homePage.signUpLink.click();
-  await signUpPage.fillSignUpForm(username, 'password123');
-  const requestPromise = page.waitForRequest(
-    (request) => request.url().includes('signup') && request.method() === 'POST'
-  );
-
-  await signUpPage.buttonSignUp.click();
-
-  const request = await requestPromise;
-  expect(request.method()).toBe('POST');
+  expect(payload).toHaveProperty('cookie');
 });

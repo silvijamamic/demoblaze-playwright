@@ -58,7 +58,7 @@ test('API POST - pagination returns products for next page', async ({ request })
   expect(body.Items[0]).toHaveProperty('cat');
   expect(body.Items[0]).toHaveProperty('id');
   expect(body.Items[0]).toHaveProperty('price');
-  expect(body.Items[0]).toHaveProperty('title');
+  expect(body.Items[0]).toHaveProperty('title'); //provjerit tip propertyja da je string
 });
 
 test('API POST - returns list of products for Phones', async ({ request }) => {

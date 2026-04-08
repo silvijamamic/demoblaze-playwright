@@ -34,4 +34,9 @@ export class LoginPage {
     await this.usernameTextbox.fill(username);
     await this.passwordTextbox.fill(password);
   }
+
+  async loginClick(username: string, password: string) {
+    await this.login(username, password);
+    await this.loginButton.click();
+  }
 }

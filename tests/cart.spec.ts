@@ -1,11 +1,7 @@
-//import { test, expect } from '@playwright/test';
 import { test, expect } from './fixtures/basePage';
-//import { CartPage } from '../pages/cart';
 
 //Open product details
-test('Open product details for Samsung galaxy s6', async ({ cartPage }) => {
-  //const cartPage = new CartPage(page);
-
+test('Open product details for Samsung galaxy s6', async ({ cartPage, page }) => {
   await cartPage.goto();
   await cartPage.samsungGalaxy.click();
   await expect.soft(cartPage.headingSamsungGalaxy).toBeVisible();
@@ -52,17 +48,22 @@ test('Delete products from cart', async ({ cartPage, page }) => {
 
 test('Verify total amount of added products to Cart', async ({ cartPage, page, helpersPage }) => {
   await cartPage.goto();
+  await cartPage.cartLink.click();
+  await cartPage.deleteProductsFromCart();
   await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
   await helpersPage.verfiyAlertMessage('Product added');
   await cartPage.linkAddToCart.click();
   await cartPage.cartLink.click();
   await expect(cartPage.headingProducts).toBeVisible();
+  await expect(page.locator('#tbodyid tr')).toHaveCount(1, { timeout: 15000 });
   await cartPage.productStore.click();
   await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
   await helpersPage.verfiyAlertMessage('Product added');
   await cartPage.linkAddToCart.click();
   await cartPage.cartLink.click();
   await expect(cartPage.headingProducts).toBeVisible();
+  await expect(page.locator('#tbodyid tr')).toHaveCount(2, { timeout: 15000 });
+
   const price1 = await cartPage.getProductPriceByName('Samsung galaxy s6');
   const price2 = await cartPage.getProductPriceByName('Nokia lumia 1520');
   const expectedTotal = price1 + price2;

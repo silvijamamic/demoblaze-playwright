@@ -32,4 +32,9 @@ export class SignUpPage {
     await this.usernameTextboxSignUp.fill(username);
     await this.passwordTextboxSignUp.fill(password);
   }
+
+  async signUpClick(username: string, password: string) {
+    await this.fillSignUpForm(username, password);
+    await this.buttonSignUp.click();
+  }
 }

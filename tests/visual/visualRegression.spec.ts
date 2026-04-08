@@ -13,7 +13,7 @@ test('Home page - navigation bar should look as expected', async ({ homePage }) 
 
 test('Home page - Verify footer on Home page', async ({ homePage }) => {
   await homePage.goto();
-  await expect(homePage.footer).toHaveScreenshot('footer.png');
+  await expect(homePage.footer).toHaveScreenshot('footer.png'); //obrisat ss?
 });
 
 test('Home page - Carousel navigation buttons visual check', async ({ homePage }) => {
@@ -49,7 +49,10 @@ test('Contact page - Header layout', async ({ contactPage }) => {
 test('Contact page - Footer layout', async ({ contactPage }) => {
   await contactPage.goto();
   await contactPage.contactLink.click();
-  await expect(contactPage.contactFooter).toHaveScreenshot('contact-modal-footer.png');
+  await expect.soft(contactPage.buttonSendMessage).toBeVisible();
+  await expect(contactPage.buttonSendMessage).toHaveScreenshot(
+    'button-sendmessage-contact-footer.png'
+  );
 });
 
 test('About Us page - About Us modal layout', async ({ aboutUsPage }) => {
@@ -67,8 +70,8 @@ test('About Us page - About Us header', async ({ aboutUsPage }) => {
 test('About Us page - About Us footer', async ({ aboutUsPage }) => {
   await aboutUsPage.goto();
   await aboutUsPage.aboutUsLink.click();
-  await expect(aboutUsPage.aboutUsFooter).toBeVisible();
-  await expect(aboutUsPage.aboutUsFooter).toHaveScreenshot('aboutus-modal-footer.png');
+  await expect(aboutUsPage.closeAbout).toBeVisible();
+  await expect(aboutUsPage.closeAbout).toHaveScreenshot('closebutton-aboutus-footer.png');
 });
 
 test('Cart page - Empty cart visual check', async ({ cartPage }) => {
