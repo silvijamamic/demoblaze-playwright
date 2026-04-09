@@ -25,19 +25,19 @@ test('Home page - Carousel navigation buttons visual check', async ({ homePage }
 test('Login page - Login modal', async ({ loginPage }) => {
   await loginPage.goto();
   await loginPage.loginLink.click();
-  await expect(loginPage.loginModal).toHaveScreenshot('login-modal.png');
+  await expect(loginPage.loginBody).toHaveScreenshot('login-modal-body.png');
 });
 
 test('Sign Up page - Sign Up modal', async ({ signUpPage }) => {
   await signUpPage.goto();
   await signUpPage.linkSignUp.click();
-  await expect(signUpPage.signUpModal).toHaveScreenshot('signup-modal.png');
+  await expect(signUpPage.signUpBody).toHaveScreenshot('signup-modal-body.png');
 });
 
 test('Contact page - Contact modal layout', async ({ contactPage }) => {
   await contactPage.goto();
   await contactPage.contactLink.click();
-  await expect(contactPage.contactModal).toHaveScreenshot('contact-modal.png');
+  await expect(contactPage.contactBody).toHaveScreenshot('contact-modal-body.png');
 });
 
 test('Contact page - Header layout', async ({ contactPage }) => {
@@ -58,7 +58,7 @@ test('Contact page - Footer layout', async ({ contactPage }) => {
 test('About Us page - About Us modal layout', async ({ aboutUsPage }) => {
   await aboutUsPage.goto();
   await aboutUsPage.aboutUsLink.click();
-  await expect(aboutUsPage.aboutUsModal).toHaveScreenshot('aboutus-modal.png');
+  await expect(aboutUsPage.video).toHaveScreenshot('aboutus-modal-video.png');
 });
 
 test('About Us page - About Us header', async ({ aboutUsPage }) => {

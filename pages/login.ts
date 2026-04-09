@@ -11,6 +11,7 @@ export class LoginPage {
   readonly xButton: Locator;
   readonly welcome: Locator;
   readonly loginModal: Locator;
+  readonly loginBody: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -24,6 +25,7 @@ export class LoginPage {
     this.xButton = page.getByRole('dialog', { name: 'Log in' }).getByLabel('Close');
     this.welcome = page.getByRole('link', { name: 'Welcome silvijamamic' });
     this.loginModal = page.getByRole('dialog', { name: 'Log in' });
+    this.loginBody = page.locator('#logInModal > .modal-dialog > .modal-content > .modal-body');
   }
 
   async goto() {

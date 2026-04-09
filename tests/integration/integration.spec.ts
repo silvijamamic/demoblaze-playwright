@@ -1,4 +1,3 @@
-import { SignUpPage } from '../../pages/signUp';
 import { test, expect } from '../fixtures/basePage';
 
 test('Next button sends correct payload', async ({ page, homePage }) => {

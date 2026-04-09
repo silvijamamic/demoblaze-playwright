@@ -13,6 +13,7 @@ export class ContactPage {
   readonly contactModal: Locator;
   readonly contactHeader: Locator;
   readonly contactFooter: Locator;
+  readonly contactBody: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -30,6 +31,7 @@ export class ContactPage {
     this.contactModal = page.getByRole('dialog', { name: 'New message' });
     this.contactHeader = page.getByText('New message ×');
     this.contactFooter = page.getByText('Close Send message');
+    this.contactBody = page.locator('div').nth(4);
   }
 
   async goto() {
