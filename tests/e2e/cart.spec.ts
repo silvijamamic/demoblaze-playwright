@@ -1,4 +1,4 @@
-import { test, expect } from './fixtures/basePage';
+import { test, expect } from '../fixtures/basePage';
 
 //Open product details
 test('Open product details for Samsung galaxy s6', async ({ cartPage, page }) => {
@@ -46,28 +46,25 @@ test('Delete products from cart', async ({ cartPage, page }) => {
   await expect(cartPage.deleteLink).not.toBeVisible();
 });
 
-test('Verify total amount of added products to Cart', async ({
-  cartPage,
-  helpersPage,
-  homePage,
-}) => {
+test('Verify total amount of added products to Cart', async ({ cartPage, helpersPage }) => {
   await cartPage.goto();
   await cartPage.cartLink.click();
-  await homePage.goto();
+  await expect(cartPage.headingProducts).toBeVisible();
+
   await cartPage.deleteProductsFromCart();
+  await cartPage.productStore.click();
   await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
   await helpersPage.verfiyAlertMessage('Product added');
   await cartPage.linkAddToCart.click();
   await cartPage.cartLink.click();
   await expect(cartPage.headingProducts).toBeVisible();
-  //await expect(page.locator('#tbodyid tr')).toHaveCount(1, { timeout: 15000 });
+
   await cartPage.productStore.click();
   await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
   await helpersPage.verfiyAlertMessage('Product added');
   await cartPage.linkAddToCart.click();
   await cartPage.cartLink.click();
   await expect(cartPage.headingProducts).toBeVisible();
-  //await expect(page.locator('#tbodyid tr')).toHaveCount(2, { timeout: 15000 });
 
   const price1 = await cartPage.getProductPriceByName('Samsung galaxy s6');
   const price2 = await cartPage.getProductPriceByName('Nokia lumia 1520');
@@ -80,6 +77,17 @@ test('Verify total amount of added products to Cart', async ({
 test('View empty cart screen', async ({ cartPage }) => {
   await cartPage.goto();
   await expect(cartPage.deleteLink).not.toBeVisible();
+});
+
+test('Cart persists after page refresh for logged in user', async ({ page, cartPage }) => {
+  await cartPage.goto();
+  await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
+  await cartPage.linkAddToCart.click();
+
+  await page.reload();
+
+  await cartPage.cartLink.click();
+  await expect(cartPage.samsungGalaxyCart).toBeVisible();
 });
 
 test('Verify product details UI elements', async ({ page }) => {

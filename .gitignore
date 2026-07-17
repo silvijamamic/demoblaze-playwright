@@ -2,3 +2,7 @@ node_modules
 playwright-report
 test-results
 .DS_Store
+.env
+tests/setup/data.json
+/playwright/.cache/
+/playwright/.auth/

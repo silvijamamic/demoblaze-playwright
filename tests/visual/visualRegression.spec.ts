@@ -13,7 +13,7 @@ test('Home page - navigation bar should look as expected', async ({ homePage }) 
 
 test('Home page - Verify footer on Home page', async ({ homePage }) => {
   await homePage.goto();
-  await expect(homePage.footer).toHaveScreenshot('footer.png'); //obrisat ss?
+  await expect(homePage.footer).toHaveScreenshot('footer.png');
 });
 
 test('Home page - Carousel navigation buttons visual check', async ({ homePage }) => {

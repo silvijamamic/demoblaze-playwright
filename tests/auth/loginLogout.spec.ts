@@ -1,7 +1,4 @@
-//import { test, expect } from '@playwright/test';
-import { test, expect } from './fixtures/basePage';
-//import { LoginPage } from '../pages/login';
-import { HelpersPage } from '../pages/helpers';
+import { test, expect } from '../fixtures/basePage';
 
 //Open login modal
 test('Verify login modal', async ({ loginPage }) => {

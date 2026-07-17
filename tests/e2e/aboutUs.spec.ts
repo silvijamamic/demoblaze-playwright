@@ -1,5 +1,5 @@
 //import { test, expect } from '@playwright/test';
-import { test, expect } from './fixtures/basePage';
+import { test, expect } from '../fixtures/basePage';
 
 //About us - open modal
 test('About us - open modal', async ({ aboutUsPage }) => {

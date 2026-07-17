@@ -1,5 +1,5 @@
 //import { test, expect } from '@playwright/test';
-import { test, expect } from './fixtures/basePage';
+import { test, expect } from '../fixtures/basePage';
 //import { ContactPage } from '../pages/contact';
 
 //Contact - open contact modal

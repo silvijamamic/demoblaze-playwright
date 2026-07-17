@@ -1,16 +1,23 @@
 import { test, expect } from '../fixtures/basePage';
 
+//test.use({ storageState: undefined });
+
 test('Next button sends correct payload', async ({ page, homePage }) => {
   await homePage.goto();
 
+  await expect(homePage.samsungGalaxy).toBeVisible();
+  await expect(homePage.nokiaLumia).toBeVisible();
+  await expect(homePage.buttonNext).toBeVisible();
+  await expect(homePage.buttonNext).toBeEnabled();
+
   const [request] = await Promise.all([
-    page.waitForRequest((req) => req.url().includes('pagination') && req.method() === 'POST'),
+    page.waitForRequest((req) => req.url().endsWith('/pagination') && req.method() === 'POST'),
     homePage.buttonNext.click(),
   ]);
 
   const payload = request.postDataJSON();
 
-  expect(payload).toEqual({ id: '' });
+  expect(payload).toEqual({ id: '9' });
 });
 
 test('Login sends correct payload', async ({ page, loginPage, homePage }) => {
