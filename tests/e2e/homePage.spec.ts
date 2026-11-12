@@ -1,6 +1,12 @@
 //import { test, expect } from '@playwright/test';
 import { test, expect } from '../fixtures/basePage';
-//import { HomePage } from '../pages/homePage';
+
+test.use({
+  storageState: {
+    cookies: [],
+    origins: [],
+  },
+});
 
 //Open home page
 test('Open Home page', async ({ homePage }) => {

@@ -127,7 +127,7 @@ test('Add to cart sends correct payload', async ({ page, cartPage, helpersPage }
 //provjerit payload
 //dodat soft kod expect
 
-test('Purchase triggers deletecart request', async ({ page, checkoutPage }) => {
+test('Purchase triggers delete cart request', async ({ page, checkoutPage }) => {
   await checkoutPage.goto();
   await checkoutPage.cartLink.click();
   await checkoutPage.buttonPlaceOrder.click();

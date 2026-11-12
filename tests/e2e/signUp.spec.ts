@@ -1,6 +1,13 @@
 //import { test, expect } from '@playwright/test';
 import { test, expect } from '../fixtures/basePage';
 
+test.use({
+  storageState: {
+    cookies: [],
+    origins: [],
+  },
+});
+
 //Open Sign Up modal
 test('Open Sign up modal', async ({ signUpPage }) => {
   await signUpPage.goto();

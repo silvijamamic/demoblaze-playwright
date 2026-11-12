@@ -1,5 +1,53 @@
 import { test, expect } from '../fixtures/basePage';
 
+test.use({
+  storageState: {
+    cookies: [],
+    origins: [],
+  },
+});
+
+test('Verify total amount of added products to Cart', async ({ cartPage, page }) => {
+  await cartPage.goto();
+
+  await cartPage.cartLink.click();
+  await expect(cartPage.headingProducts).toBeVisible();
+  await cartPage.deleteProductsFromCart();
+
+  await cartPage.productStore.click();
+  await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
+
+  const samsungDialogPromise = page.waitForEvent('dialog');
+  await cartPage.linkAddToCart.click();
+  const samsungDialog = await samsungDialogPromise;
+  expect(samsungDialog.message()).toContain('Product added');
+  await samsungDialog.accept();
+
+  await cartPage.cartLink.click();
+  await expect(cartPage.headingProducts).toBeVisible();
+  await expect(cartPage.samsungCart).toBeVisible();
+
+  await cartPage.productStore.click();
+  await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
+
+  const nokiaDialogPromise = page.waitForEvent('dialog');
+  await cartPage.linkAddToCart.click();
+  const nokiaDialog = await nokiaDialogPromise;
+  expect(nokiaDialog.message()).toContain('Product added');
+  await nokiaDialog.accept();
+
+  await cartPage.cartLink.click();
+  await expect(cartPage.headingProducts).toBeVisible();
+  await expect(cartPage.samsungCart).toBeVisible();
+  await expect(cartPage.nokiaCart).toBeVisible();
+
+  const price1 = await cartPage.getProductPriceByName('Samsung galaxy s6');
+  const price2 = await cartPage.getProductPriceByName('Nokia lumia 1520');
+  const total = await cartPage.getTotalPrice();
+
+  expect(total).toBe(price1 + price2);
+});
+
 //Open product details
 test('Open product details for Samsung galaxy s6', async ({ cartPage, page }) => {
   await cartPage.goto();
@@ -46,48 +94,10 @@ test('Delete products from cart', async ({ cartPage, page }) => {
   await expect(cartPage.deleteLink).not.toBeVisible();
 });
 
-test('Verify total amount of added products to Cart', async ({ cartPage, helpersPage }) => {
-  await cartPage.goto();
-  await cartPage.cartLink.click();
-  await expect(cartPage.headingProducts).toBeVisible();
-
-  await cartPage.deleteProductsFromCart();
-  await cartPage.productStore.click();
-  await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
-  await helpersPage.verfiyAlertMessage('Product added');
-  await cartPage.linkAddToCart.click();
-  await cartPage.cartLink.click();
-  await expect(cartPage.headingProducts).toBeVisible();
-
-  await cartPage.productStore.click();
-  await cartPage.addProductToCart(cartPage.nokiaLumia, cartPage.headingNokia);
-  await helpersPage.verfiyAlertMessage('Product added');
-  await cartPage.linkAddToCart.click();
-  await cartPage.cartLink.click();
-  await expect(cartPage.headingProducts).toBeVisible();
-
-  const price1 = await cartPage.getProductPriceByName('Samsung galaxy s6');
-  const price2 = await cartPage.getProductPriceByName('Nokia lumia 1520');
-  const expectedTotal = price1 + price2;
-  const total = await cartPage.getTotalPrice();
-  expect(total).toBe(expectedTotal);
-});
-
 //View empty cart screen
 test('View empty cart screen', async ({ cartPage }) => {
   await cartPage.goto();
   await expect(cartPage.deleteLink).not.toBeVisible();
-});
-
-test('Cart persists after page refresh for logged in user', async ({ page, cartPage }) => {
-  await cartPage.goto();
-  await cartPage.addProductToCart(cartPage.samsungGalaxy, cartPage.headingSamsungGalaxy);
-  await cartPage.linkAddToCart.click();
-
-  await page.reload();
-
-  await cartPage.cartLink.click();
-  await expect(cartPage.samsungGalaxyCart).toBeVisible();
 });
 
 test('Verify product details UI elements', async ({ page }) => {

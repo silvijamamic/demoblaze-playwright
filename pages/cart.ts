@@ -33,7 +33,6 @@ export class CartPage {
     this.totalPrice = page.locator('#totalp');
     this.productStore = page.getByRole('link', { name: 'PRODUCT STORE' });
     this.linkAddToCart = page.getByRole('link', { name: 'Add to cart' });
-    this.productStore = page.getByRole('link', { name: 'PRODUCT STORE' });
     this.nokiaLumia = page.getByRole('link', { name: 'Nokia lumia 1520' });
     this.samsungCart = page.getByRole('cell', { name: 'Samsung galaxy s6' });
     this.nokiaCart = page.getByRole('cell', { name: 'Nokia lumia' });
@@ -62,10 +61,24 @@ export class CartPage {
     await product.click();
     await productHeading.waitFor();
   }
+  // async getProductPriceByName(productName: string): Promise<number> {
+  //   const row = this.page.locator('#tbodyid tr', { hasText: productName });
+  //   await expect(row).toBeVisible();
+  //   const priceText = await row.locator('td').nth(2).innerText(); //treća kolona
+  //   return Number(priceText);
+  // }
+
   async getProductPriceByName(productName: string): Promise<number> {
-    const row = this.page.locator('#tbodyid tr', { hasText: productName });
-    await expect(row).toBeVisible();
-    const priceText = await row.locator('td').nth(2).innerText(); //treća kolona
+    const rows = this.page.locator('#tbodyid tr').filter({
+      has: this.page.getByRole('cell', {
+        name: productName,
+        exact: true,
+      }),
+    });
+
+    await expect(rows).toHaveCount(1);
+
+    const priceText = await rows.first().locator('td').nth(2).innerText();
     return Number(priceText);
   }
 
@@ -75,9 +88,14 @@ export class CartPage {
   }
 
   async deleteProductsFromCart() {
-    while ((await this.deleteLink.count()) > 0) {
+    // Pričekaj da se tablica stabilizira
+    await this.page.waitForTimeout(1500);
+
+    while (await this.deleteLink.count()) {
       const currentCount = await this.deleteLink.count();
+
       await this.deleteLink.first().click();
+
       await expect(this.deleteLink).toHaveCount(currentCount - 1);
     }
   }
